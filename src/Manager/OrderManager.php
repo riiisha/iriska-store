@@ -24,42 +24,6 @@ class OrderManager
     {
     }
 
-
-    /*
-     *  {
-        "phone": "+79811732603",
-        "deliveryMethod": "courier",
-        "address": {
-            "city" : "cityTest",
-            "street" : "streetTest",
-            "house": "houseTest"
-        },
-        "products": [
-        {
-          "id": 1,
-          "version": 3,
-          "quantity": 1
-        },
-        {
-          "id": 1,
-          "version": 3,
-          "quantity": 1
-        },
-
-        {
-          "id": 2,
-          "version": 1,
-          "quantity": 2
-        },
-        {
-          "id": 3,
-          "version": 2,
-          "quantity": 1
-        }
-      ]
-    }
-     * */
-    /*TODO Удалить из корзины те товары, которые пользователь уже купил*/
     /*TODO Сделать все в рамках транзакции, чтобы не очищать корзину, если заказ не был оформлен */
     /*TODO Добавить логирование  */
     /** Оформление заказа
@@ -67,12 +31,11 @@ class OrderManager
      */
     public function create(OrderDTO $orderDTO, User $user)
     {
-        $cart = $user->getCart();
-
-        /* TODO Не знаю, лучше добавить последние версии товаров или те, которые были в последний момент в корзине */
+        /* TODO Не знаю, лучше добавить последние версии товаров или те, которые были в последний момент в корзине
+            пока выбран первый вариант (если оставим его, нужно удалить версии товаров в $orderDTO)
+        */
         $ids = [];
         $totalQuantity = 0;
-
         foreach ($orderDTO->products as $product) {
             if (in_array($product['id'], $ids, true)) {
                 throw new Exception('Ошибка: повторяющийся идентификатор товара ' . $product['id']);
@@ -85,7 +48,6 @@ class OrderManager
             throw new Exception("Вы не можете заказать больше 20 товаров");
         }
         $products = $this->productRepository->findLatestVersionsByIdentifiers($ids);
-
 
         $deliveryMethod = DeliveryMethod::from($orderDTO->deliveryMethod);
 
@@ -101,13 +63,12 @@ class OrderManager
 
         foreach ($orderDTO->products as $item) {
             foreach ($products as $product) {
-                // Находим соответствующий товар по id
                 if ($product->getId() === $item['id']) {
                     $orderItem = new OrderItem();
                     $orderItem->setProduct($product);
                     $orderItem->setQuantity($item['quantity']);
                     $order->addOrderItem($orderItem);
-                    break; // прерываем цикл, как только нашли соответствующий товар
+                    break;
                 }
             }
         }
@@ -117,22 +78,18 @@ class OrderManager
             $address = $this->addressManager->getAddress($orderDTO->address, $user);
             $order->setAddress($address);
             $this->entityManager->persist($address);
-
         }
 
         $this->entityManager->persist($order);
         $this->entityManager->flush();
-//        dump("Заказ сформирован");
 
+        /* TODO Удаление из корзины тех товары, которые попали в заказ - переделать на массовое удаление */
         foreach ($orderDTO->products as $product) {
             for ($i = 0; $i <= $product['quantity']; $i++) {
                 $this->cartManager->remove(
                     new UpdateCartDTO($product['id']), $user
                 );
             }
-//            dump("Товар " . $product['id'] . "удален из корзины");
         }
     }
-
-
 }
