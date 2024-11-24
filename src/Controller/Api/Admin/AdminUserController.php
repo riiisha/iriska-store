@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\AsController;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Throwable;
 
@@ -29,7 +30,9 @@ class AdminUserController extends AbstractController
             /*TODO - заменить роль на админа (в секьюрити) и добавить метод смены пароля*/
             $this->manager->edit($userEditDTO);
             return new JsonResponse([], Response::HTTP_OK);
-        }catch (Throwable $throwable){
+        } catch (NotFoundHttpException) {
+            return new JsonResponse([], Response::HTTP_NOT_FOUND);
+        } catch (Throwable $throwable) {
             return new JsonResponse(['message' => $throwable->getMessage()], Response::HTTP_BAD_REQUEST);
         }
     }
