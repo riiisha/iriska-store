@@ -12,6 +12,8 @@ use App\Enum\OrderStatus;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Symfony\Component\HttpFoundation\Response;
+
 
 class OrderManager
 {
@@ -38,7 +40,10 @@ class OrderManager
         $totalQuantity = 0;
         foreach ($orderDTO->products as $product) {
             if (in_array($product['id'], $ids, true)) {
-                throw new Exception('Ошибка: повторяющийся идентификатор товара ' . $product['id']);
+                throw new Exception(
+                    'Ошибка: повторяющийся идентификатор товара ' . $product['id'],
+                    Response::HTTP_UNPROCESSABLE_ENTITY
+                );
             }
             $ids[] = $product['id'];
             $totalQuantity += $product['quantity'];
@@ -52,7 +57,7 @@ class OrderManager
         $deliveryMethod = DeliveryMethod::from($orderDTO->deliveryMethod);
 
         if (!$orderDTO->address && $deliveryMethod == DeliveryMethod::COURIER) {
-            throw new Exception("Адрес не может быть пустым.");
+            throw new Exception("Адрес не может быть пустым.", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         $order = new Order();
