@@ -8,18 +8,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class UserEditDTO
 {
+    /*TODO - переделать роль на array*/
     public function __construct(
         #[Assert\Type('string')]
         #[Assert\Email]
         public string $email,
         #[Assert\Type('string')]
-        public ?string $name,
+        public string $name,
         #[Assert\Type('string')]
-        public ?string $phone,
-        #[Assert\Type('string')]
-        public ?string $password,
+        public string $phone,
         #[Assert\Choice(choices: ['ROLE_USER', 'ROLE_ADMIN'])]
-        public ?string $role,
+        public string $role,
     ) {
     }
 }

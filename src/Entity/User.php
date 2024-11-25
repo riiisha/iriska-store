@@ -34,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles;
 
     /**
      * @var string The hashed password
@@ -57,10 +57,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'owner', orphanRemoval: true)]
     private Collection $addresses;
 
-    public function __construct()
+    public function __construct(
+        string $name,
+        string $email,
+        string $phone,
+        array  $roles = ['ROLE_USER']
+    )
     {
+        $this->name = $name;
+        $this->email = $email;
+        $this->phone = $phone;
+        $this->roles = $roles;
         $this->orders = new ArrayCollection();
         $this->addresses = new ArrayCollection();
+    }
+
+    public function update(
+        string $name,
+        string $phone,
+        array  $roles = ['ROLE_USER']
+    ): void
+    {
+        $this->name = $name;
+        $this->phone = $phone;
+        $this->roles = $roles;
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace App\Controller\Api\Admin;
 
 use App\DTO\User\UserEditDTO;
-use App\Manager\UserManager;
+use App\Service\User\UserUpdateService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,18 +17,17 @@ use Throwable;
 #[AsController]
 class AdminUserController extends AbstractController
 {
-    public function __construct(private readonly UserManager $manager)
+    public function __construct(private readonly UserUpdateService $userUpdateService)
     {
     }
 
-    #[Route(path: '/edit', name: 'api_admin_user_edit', methods: ['POST'])]
+    #[Route(path: '/edit', name: 'api_admin_user_edit', methods: ['PUT'])]
     public function editAction(
         #[MapRequestPayload] UserEditDTO $userEditDTO
     ): Response
     {
         try {
-            /*TODO - заменить роль на админа (в секьюрити) и добавить метод смены пароля*/
-            $this->manager->edit($userEditDTO);
+            $this->userUpdateService->update($userEditDTO);
             return new JsonResponse([], Response::HTTP_OK);
         } catch (NotFoundHttpException) {
             return new JsonResponse([], Response::HTTP_NOT_FOUND);

@@ -3,7 +3,8 @@
 namespace App\Controller\Api;
 
 use App\DTO\User\UserRegisterDTO;
-use App\Manager\UserManager;
+use App\Exception\UserExistsException;
+use App\Service\User\UserRegisterService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,14 +16,17 @@ use Symfony\Component\Routing\Annotation\Route;
 #[AsController]
 class UserController extends AbstractController
 {
-    public function __construct(private readonly UserManager $manager)
+    public function __construct(private readonly UserRegisterService $userRegisterService)
     {
     }
 
+    /**
+     * @throws UserExistsException
+     */
     #[Route(path: '/register', name: 'api_user_register', methods: ['POST'])]
     public function registerAction(#[MapRequestPayload] UserRegisterDTO $userRegisterDTO): Response
     {
-        $this->manager->register($userRegisterDTO);
+        $this->userRegisterService->register($userRegisterDTO);
         return new JsonResponse([], Response::HTTP_CREATED);
     }
 }
