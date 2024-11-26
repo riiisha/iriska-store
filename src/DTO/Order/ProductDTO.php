@@ -22,7 +22,6 @@ final class ProductDTO
         #[Assert\Type('integer')]
         #[Assert\GreaterThan(0)]
         public int $quantity,
-    )
-    {
+    ) {
     }
 }

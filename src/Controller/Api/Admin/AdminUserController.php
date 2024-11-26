@@ -24,8 +24,7 @@ class AdminUserController extends AbstractController
     #[Route(path: '/edit', name: 'api_admin_user_edit', methods: ['PUT'])]
     public function editAction(
         #[MapRequestPayload] UserEditDTO $userEditDTO
-    ): Response
-    {
+    ): Response {
         try {
             $this->userUpdateService->update($userEditDTO);
             return new JsonResponse([], Response::HTTP_OK);

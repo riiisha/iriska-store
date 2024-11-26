@@ -2,7 +2,6 @@
 
 namespace App\Exception;
 
-
 use Exception;
 
 class UserExistsException extends Exception

@@ -20,8 +20,7 @@ class ProductController extends AbstractController
 
     public function __construct(
         private readonly ProductRepository $productRepository,
-    )
-    {
+    ) {
         $this->serializer = (new SerializerBuilder())->build();
     }
 

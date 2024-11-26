@@ -10,12 +10,11 @@ use App\Entity\Address\Street;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
-class AddressManager
+readonly class AddressManager
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-    )
-    {
+        private EntityManagerInterface $entityManager,
+    ) {
     }
 
 

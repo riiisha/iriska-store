@@ -20,7 +20,7 @@ class Product
     #[ORM\Column(type: 'string', length: 255)]
     private string $name;
 
-    #[ORM\Column(type: 'json',)]
+    #[ORM\Column(type: 'json', )]
     #[SerializedName('measurements')]
     private array $measurements;
 

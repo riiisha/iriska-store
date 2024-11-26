@@ -1,11 +1,10 @@
 <?php
 
-
 namespace App\DTO\Product;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-final  class MeasurementDTO
+final class MeasurementDTO
 {
     public function __construct(
         #[Assert\NotBlank]
@@ -24,7 +23,6 @@ final  class MeasurementDTO
         #[Assert\Type('integer')]
         #[Assert\GreaterThan(0)]
         public int $length
-    )
-    {
+    ) {
     }
 }

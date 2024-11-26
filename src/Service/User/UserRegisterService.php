@@ -9,15 +9,13 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-
-class UserRegisterService
+readonly class UserRegisterService
 {
     public function __construct(
-        private readonly EntityManagerInterface      $entityManager,
-        private readonly UserRepository              $userRepository,
-        private readonly UserPasswordHasherInterface $userPasswordHasher
-    )
-    {
+        private EntityManagerInterface      $entityManager,
+        private UserRepository              $userRepository,
+        private UserPasswordHasherInterface $userPasswordHasher
+    ) {
     }
 
     /**

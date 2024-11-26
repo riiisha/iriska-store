@@ -62,8 +62,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         string $email,
         string $phone,
         array  $roles = ['ROLE_USER']
-    )
-    {
+    ) {
         $this->name = $name;
         $this->email = $email;
         $this->phone = $phone;
@@ -76,8 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         string $name,
         string $phone,
         array  $roles = ['ROLE_USER']
-    ): void
-    {
+    ): void {
         $this->name = $name;
         $this->phone = $phone;
         $this->roles = $roles;

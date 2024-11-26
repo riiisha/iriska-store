@@ -14,14 +14,12 @@ use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class CartManager
+readonly class CartManager
 {
-
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly ProductRepository      $productRepository
-    )
-    {
+        private EntityManagerInterface $entityManager,
+        private ProductRepository      $productRepository
+    ) {
     }
 
     /** Просмотр корзины пользователя */

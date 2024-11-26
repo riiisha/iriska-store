@@ -5,7 +5,6 @@ namespace App\Event\User;
 use App\Entity\User;
 use Symfony\Contracts\EventDispatcher\Event;
 
-
 class UserRegisterEvent extends Event
 {
     public const NAME = 'user_register';

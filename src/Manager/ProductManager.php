@@ -7,15 +7,12 @@ use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-
-class ProductManager
+readonly class ProductManager
 {
-
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly ProductRepository      $productRepository
-    )
-    {
+        private EntityManagerInterface $entityManager,
+        private ProductRepository      $productRepository
+    ) {
     }
 
     public function createOrUpdateProduct(CreateProductDTO $createProductDTO): Product

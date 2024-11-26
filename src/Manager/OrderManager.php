@@ -14,7 +14,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
-
 class OrderManager
 {
     public function __construct(
@@ -22,8 +21,7 @@ class OrderManager
         private readonly ProductRepository      $productRepository,
         private readonly AddressManager         $addressManager,
         private readonly CartManager            $cartManager
-    )
-    {
+    ) {
     }
 
     /*TODO Сделать все в рамках транзакции, чтобы не очищать корзину, если заказ не был оформлен */
@@ -92,7 +90,8 @@ class OrderManager
         foreach ($orderDTO->products as $product) {
             for ($i = 0; $i <= $product['quantity']; $i++) {
                 $this->cartManager->remove(
-                    new UpdateCartDTO($product['id']), $user
+                    new UpdateCartDTO($product['id']),
+                    $user
                 );
             }
         }

@@ -31,7 +31,8 @@ class ApiLoginController extends AbstractController
                 'userId' => $user->getId(),
                 'userIdentifier' => $user->getUserIdentifier()
             ],
-            $this->publicApiToken, 'HS256'
+            $this->publicApiToken,
+            'HS256'
         );
 
         return $this->json([

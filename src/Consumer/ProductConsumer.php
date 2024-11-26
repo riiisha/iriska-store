@@ -22,8 +22,7 @@ final class ProductConsumer implements NamedConsumer
     public function __construct(
         Configuration  $configuration,
         ProductManager $productManager,
-    )
-    {
+    ) {
         $this->configuration = $configuration;
         $this->serializer = (new SerializerBuilder())->build();
         $this->productManager = $productManager;

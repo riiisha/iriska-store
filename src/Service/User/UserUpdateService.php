@@ -6,13 +6,12 @@ use App\DTO\User\UserEditDTO;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-class UserUpdateService
+readonly class UserUpdateService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly UserRepository         $userRepository,
-    )
-    {
+        private EntityManagerInterface $entityManager,
+        private UserRepository         $userRepository,
+    ) {
     }
 
     public function update(UserEditDTO $userEditDTO): void

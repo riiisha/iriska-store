@@ -25,7 +25,6 @@ final class UserRegisterDTO
         #[Assert\Type('string')]
         #[PasswordStrength(minScore: PasswordStrength::STRENGTH_WEAK)]
         public string $password,
-    )
-    {
+    ) {
     }
 }

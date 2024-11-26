@@ -21,8 +21,7 @@ class CartController extends AbstractController
 {
     public function __construct(
         private readonly CartManager $manager,
-    )
-    {
+    ) {
     }
 
     #[Route(path: '', name: 'api_cart_show', methods: ['GET'])]

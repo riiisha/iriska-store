@@ -2,12 +2,10 @@
 
 namespace App\Controller\Api;
 
-use App\DTO\Cart\Request\AddToCartDTO;
-use App\DTO\Cart\Request\UpdateCartDTO;
 use App\DTO\Order\OrderDTO;
 use App\Entity\User;
-use App\Manager\CartManager;
 use App\Manager\OrderManager;
+use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -22,10 +20,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[AsController]
 class OrderController extends AbstractController
 {
+    private Serializer $serializer;
+
     public function __construct(
         private readonly OrderManager $manager,
-    )
-    {
+    ) {
         $this->serializer = (new SerializerBuilder())->build();
     }
 
@@ -45,9 +44,8 @@ class OrderController extends AbstractController
         $user = $this->getUser();
 
         $orders = $user->getOrders();
-        return new JsonResponse($this->serializer->serialize($orders, 'json'), Response::HTTP_OK, [], true);
 
-//        return new JsonResponse($orders->toArray(), Response::HTTP_OK);
+        return new JsonResponse($this->serializer->serialize($orders, 'json'), Response::HTTP_OK, [], true);
     }
 
     protected function getUser(): ?UserInterface
