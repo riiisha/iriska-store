@@ -14,13 +14,13 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Component\HttpFoundation\Response;
 
-class OrderManager
+readonly class OrderManager
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly ProductRepository      $productRepository,
-        private readonly AddressManager         $addressManager,
-        private readonly CartManager            $cartManager
+        private EntityManagerInterface $entityManager,
+        private ProductRepository      $productRepository,
+        private AddressManager         $addressManager,
+        private CartManager            $cartManager
     ) {
     }
 
