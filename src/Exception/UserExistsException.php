@@ -5,7 +5,6 @@ namespace App\Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-
 class UserExistsException extends HttpException
 {
     public function __construct()

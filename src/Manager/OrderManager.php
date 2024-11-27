@@ -12,6 +12,7 @@ use App\Enum\OrderStatus;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 readonly class OrderManager
@@ -20,7 +21,8 @@ readonly class OrderManager
         private EntityManagerInterface $entityManager,
         private ProductRepository      $productRepository,
         private AddressManager         $addressManager,
-        private CartManager            $cartManager
+        private CartManager            $cartManager,
+        private LoggerInterface        $logger
     ) {
     }
 
