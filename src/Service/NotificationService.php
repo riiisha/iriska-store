@@ -4,12 +4,14 @@ namespace App\Service;
 
 use App\DTO\Notification\RegistrationNotificationEmailDTO;
 use App\DTO\Notification\RegistrationNotificationSmsDTO;
-use JsonException;
+use Exception;
+use Psr\Log\LoggerInterface;
 
 readonly class NotificationService
 {
     public function __construct(
-        private KafkaService $kafkaService
+        private KafkaService    $kafkaService,
+        private LoggerInterface $logger
     ) {
 
     }
@@ -18,8 +20,12 @@ readonly class NotificationService
     {
         try {
             $this->kafkaService->send('notification', $notification);
-        } catch (JsonException $e) {
-            /*TODO - добавить логирование*/
+            $this->logger->info('SMS sent', ['notification' => json_encode($notification)]);
+        } catch (Exception $e) {
+            $this->logger->error('SMS not sent', [
+                'notification' => json_encode($notification),
+                'error' => $e->getMessage()
+            ]);
         }
     }
     /* TODO
