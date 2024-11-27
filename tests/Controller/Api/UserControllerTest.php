@@ -7,6 +7,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerTest extends BaseWebTestCase
 {
+
+    private function getUrl(): string
+    {
+        return '/api/user/register';
+    }
+
     public function testUserRegisterSuccess()
     {
         $data = [
@@ -16,10 +22,8 @@ class UserControllerTest extends BaseWebTestCase
             'name' => 'test',
         ];
 
-        $this->client->request(
-            'POST', '/api/user/register', [], [],
-            ['CONTENT_TYPE' => 'application/json'], json_encode($data)
-        );
+        $this->postRequest($this->getUrl(), json_encode($data));
+
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 
@@ -32,10 +36,8 @@ class UserControllerTest extends BaseWebTestCase
             'name' => 'test',
         ];
 
-        $this->client->request(
-            'POST', '/api/user/register', [], [],
-            ['CONTENT_TYPE' => 'application/json'], json_encode($data)
-        );
+        $this->postRequest($this->getUrl(), json_encode($data));
+
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
@@ -48,10 +50,8 @@ class UserControllerTest extends BaseWebTestCase
             'name' => 'test',
         ];
 
-        $this->client->request(
-            'POST', '/api/user/register', [], [],
-            ['CONTENT_TYPE' => 'application/json'], json_encode($data)
-        );
+        $this->postRequest($this->getUrl(), json_encode($data));
+
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 }
