@@ -8,6 +8,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -19,21 +20,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Serializer\Groups(['list'])]
     private int $id;
 
     #[ORM\Column(length: 255)]
+    #[Serializer\Groups(['list'])]
     private string $name;
 
     #[ORM\Column(length: 180)]
+    #[Serializer\Groups(['list'])]
     private string $email;
 
     #[ORM\Column(length: 15)]
+    #[Serializer\Groups(['list'])]
     private string $phone;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
+    #[Serializer\Groups(['list'])]
     private array $roles;
 
     /**

@@ -3,14 +3,17 @@
 namespace App\Service\User;
 
 use App\DTO\User\UserEditDTO;
+use App\DTO\User\UserUpdatePasswordDTO;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 readonly class UserUpdateService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private UserRepository         $userRepository,
+        private EntityManagerInterface      $entityManager,
+        private UserRepository              $userRepository,
+        private UserPasswordHasherInterface $userPasswordHasher,
     ) {
     }
 
@@ -24,6 +27,14 @@ readonly class UserUpdateService
             [$userEditDTO->role],
         );
 
+        $this->entityManager->persist($user);
+        $this->entityManager->flush();
+    }
+
+    public function updatePassword(UserUpdatePasswordDTO $userUpdatePasswordDTO): void
+    {
+        $user = $this->userRepository->getById($userUpdatePasswordDTO->userId);
+        $user->setPassword($this->userPasswordHasher->hashPassword($user, $userUpdatePasswordDTO->newPassword));
         $this->entityManager->persist($user);
         $this->entityManager->flush();
     }

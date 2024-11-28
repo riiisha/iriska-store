@@ -44,7 +44,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $user = $this->findOneBy(['email' => $email]);
 
         if (!$user) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException("User not found.");
+        }
+
+        return $user;
+    }
+
+    public function getById(int $id): User
+    {
+        $user = $this->find($id);
+
+        if (!$user) {
+            throw new NotFoundHttpException("User not found.");
         }
 
         return $user;
