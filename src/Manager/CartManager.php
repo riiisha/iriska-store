@@ -96,14 +96,8 @@ readonly class CartManager
             return;
         }
 
-        if ($cartItem->getQuantity() == 1) {
-            $cart->removeCartItem($cartItem);
-            $this->entityManager->persist($cart);
-        } else {
-            $cartItem->setQuantity($cartItem->getQuantity() - 1);
-            $this->entityManager->persist($cartItem);
-        }
-
+        $cart->removeCartItems($cartItem);
+        $this->entityManager->persist($cart);
         $this->entityManager->flush();
     }
 

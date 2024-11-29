@@ -22,7 +22,7 @@ class Cart
     /**
      * @var Collection<int, CartItem>
      */
-    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'cart', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: CartItem::class, mappedBy: 'cart', cascade: ['persist', 'remove'], orphanRemoval: true)]
     private Collection $cartItems;
 
     public function __construct()
@@ -65,15 +65,23 @@ class Cart
         return $this;
     }
 
-    public function removeCartItem(CartItem $cartItem): static
+    public function removeCartItems(CartItem $cartItem, $quantity = 1): static
+    {
+        if ($cartItem->getQuantity() <= $quantity) {
+            $this->removeCartItem($cartItem);
+        } else {
+            $cartItem->setQuantity($cartItem->getQuantity() - $quantity);
+        }
+
+        return $this;
+    }
+
+    private function removeCartItem(CartItem $cartItem): void
     {
         if ($this->cartItems->removeElement($cartItem)) {
-            // set the owning side to null (unless already changed)
             if ($cartItem->getCart() === $this) {
                 $cartItem->setCart(null);
             }
         }
-
-        return $this;
     }
 }

@@ -17,7 +17,6 @@ class OrderControllerTest extends BaseWebTestCase
             'deliveryMethod' => 'courier',
             'products' => [[
                 'id' => 1,
-                'version' => 1,
                 'quantity' => 1
             ]],
             'address' => [

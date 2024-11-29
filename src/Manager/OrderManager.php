@@ -2,8 +2,8 @@
 
 namespace App\Manager;
 
-use App\DTO\Cart\Request\UpdateCartDTO;
 use App\DTO\Order\OrderDTO;
+use App\Entity\CartItem;
 use App\Entity\Order\Order;
 use App\Entity\Order\OrderItem;
 use App\Entity\User;
@@ -21,7 +21,6 @@ readonly class OrderManager
         private EntityManagerInterface $entityManager,
         private ProductRepository      $productRepository,
         private AddressManager         $addressManager,
-        private CartManager            $cartManager,
     ) {
     }
 
@@ -35,7 +34,7 @@ readonly class OrderManager
         foreach ($orderDTO->products as $product) {
             if (in_array($product['id'], $ids, true)) {
                 throw new Exception(
-                    'Ошибка: повторяющийся идентификатор товара ' . $product['id'],
+                    'Error: Duplicate product ID: ' . $product['id'],
                     Response::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
@@ -44,14 +43,14 @@ readonly class OrderManager
         }
 
         if ($totalQuantity > 20) {
-            throw new Exception("Вы не можете заказать больше 20 товаров");
+            throw new Exception("You cannot order more than 20 items.");
         }
         $products = $this->productRepository->findLatestVersionsByIdentifiers($ids);
 
         $deliveryMethod = DeliveryMethod::from($orderDTO->deliveryMethod);
 
         if (!$orderDTO->address && $deliveryMethod == DeliveryMethod::COURIER) {
-            throw new Exception("Адрес не может быть пустым.", Response::HTTP_UNPROCESSABLE_ENTITY);
+            throw new Exception("Address cannot be empty.", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
         try {
@@ -81,26 +80,33 @@ readonly class OrderManager
                 $order->setAddress($address);
                 $this->entityManager->persist($address);
             }
-
             $this->entityManager->persist($order);
+
+            // Очистка корзины
+            $this->cleanCarts($orderDTO, $user);
+
             $this->entityManager->flush();
-
-            // Удаление товаров из корзины
-            /* TODO Удаление из корзины тех товары, которые попали в заказ - переделать на массовое удаление */
-            foreach ($orderDTO->products as $product) {
-
-                for ($i = 0; $i <= $product['quantity']; $i++) {
-                    $this->cartManager->remove(
-                        new UpdateCartDTO($product['id']),
-                        $user
-                    );
-                }
-            }
-
             $this->entityManager->commit();
         } catch (Exception $e) {
             $this->entityManager->rollback();
             throw $e;
         }
+    }
+
+    /**
+     * Очистка корзины
+     */
+    private function cleanCarts(OrderDTO $orderDTO, User $user): void
+    {
+        $cart = $user->getCart();
+        foreach ($orderDTO->products as $product) {
+            $cartItem = $cart->getCartItems()->filter(function (CartItem $item) use ($product): bool {
+                return $item->getProduct()->getId() === $product['id'];
+            })->first();
+            if ($cartItem) {
+                $cart->removeCartItems($cartItem, $product['quantity']);
+            }
+        }
+        $this->entityManager->persist($cart);
     }
 }
