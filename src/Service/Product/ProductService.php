@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Manager;
+namespace App\Service\Product;
 
 use App\DTO\Product\CreateProductDTO;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
-readonly class ProductManager
+readonly class ProductService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Manager;
+namespace App\Service\Order;
 
 use App\DTO\Order\OrderDTO;
 use App\Entity\CartItem;
@@ -10,24 +10,25 @@ use App\Entity\User;
 use App\Enum\DeliveryMethod;
 use App\Enum\OrderStatus;
 use App\Repository\ProductRepository;
+use App\Service\Address\AddressService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
-readonly class OrderManager
+readonly class OrderCreateService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
         private ProductRepository      $productRepository,
-        private AddressManager         $addressManager,
+        private AddressService         $addressService,
     ) {
     }
 
-    /** Оформление заказа
+    /**
+     * Оформление заказа
      * @throws Exception
      */
-    public function create(OrderDTO $orderDTO, User $user)
+    public function create(OrderDTO $orderDTO, User $user): void
     {
         $ids = [];
         $totalQuantity = 0;
@@ -76,7 +77,7 @@ readonly class OrderManager
 
             // Обработка адреса для курьерской доставки
             if ($deliveryMethod == DeliveryMethod::COURIER) {
-                $address = $this->addressManager->getAddress($orderDTO->address, $user);
+                $address = $this->addressService->getAddress($orderDTO->address, $user);
                 $order->setAddress($address);
                 $this->entityManager->persist($address);
             }

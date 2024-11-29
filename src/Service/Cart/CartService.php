@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Manager;
+namespace App\Service\Cart;
 
 use App\DTO\Cart\Request\AddToCartDTO;
 use App\DTO\Cart\Request\UpdateCartDTO;
@@ -9,12 +9,11 @@ use App\DTO\Cart\Response\ShowCartDTO;
 use App\Entity\Cart;
 use App\Entity\CartItem;
 use App\Entity\User;
-use App\Repository\CartRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-readonly class CartManager
+readonly class CartService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,

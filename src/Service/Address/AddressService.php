@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Manager;
+namespace App\Service\Address;
 
 use App\DTO\Address\AddressDTO;
 use App\Entity\Address\Address;
@@ -10,7 +10,7 @@ use App\Entity\Address\Street;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
-readonly class AddressManager
+readonly class AddressService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
