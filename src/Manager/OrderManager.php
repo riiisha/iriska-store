@@ -22,20 +22,14 @@ readonly class OrderManager
         private ProductRepository      $productRepository,
         private AddressManager         $addressManager,
         private CartManager            $cartManager,
-        private LoggerInterface        $logger
     ) {
     }
 
-    /*TODO Сделать все в рамках транзакции, чтобы не очищать корзину, если заказ не был оформлен */
-    /*TODO Добавить логирование  */
     /** Оформление заказа
      * @throws Exception
      */
     public function create(OrderDTO $orderDTO, User $user)
     {
-        /* TODO Не знаю, лучше добавить последние версии товаров или те, которые были в последний момент в корзине
-            пока выбран первый вариант (если оставим его, нужно удалить версии товаров в $orderDTO)
-        */
         $ids = [];
         $totalQuantity = 0;
         foreach ($orderDTO->products as $product) {
@@ -60,42 +54,53 @@ readonly class OrderManager
             throw new Exception("Адрес не может быть пустым.", Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $order = new Order();
-        $order->setPhone($orderDTO->phone);
-        $order->setOwner($user);
-        $order->setDeliveryMethod($deliveryMethod);
-        $order->setStatus(OrderStatus::PAID);
+        try {
+            $this->entityManager->beginTransaction();
 
-        foreach ($orderDTO->products as $item) {
-            foreach ($products as $product) {
-                if ($product->getId() === $item['id']) {
-                    $orderItem = new OrderItem();
-                    $orderItem->setProduct($product);
-                    $orderItem->setQuantity($item['quantity']);
-                    $order->addOrderItem($orderItem);
-                    break;
+            $order = new Order();
+            $order->setPhone($orderDTO->phone);
+            $order->setOwner($user);
+            $order->setDeliveryMethod($deliveryMethod);
+            $order->setStatus(OrderStatus::PAID);
+
+            foreach ($orderDTO->products as $item) {
+                foreach ($products as $product) {
+                    if ($product->getId() === $item['id']) {
+                        $orderItem = new OrderItem();
+                        $orderItem->setProduct($product);
+                        $orderItem->setQuantity($item['quantity']);
+                        $order->addOrderItem($orderItem);
+                        break;
+                    }
                 }
             }
-        }
 
-        /* Самовывоз пока без адреса, так как у нас маленький магазин с одной точкой продаж (: */
-        if ($deliveryMethod == DeliveryMethod::COURIER) {
-            $address = $this->addressManager->getAddress($orderDTO->address, $user);
-            $order->setAddress($address);
-            $this->entityManager->persist($address);
-        }
-
-        $this->entityManager->persist($order);
-        $this->entityManager->flush();
-
-        /* TODO Удаление из корзины тех товары, которые попали в заказ - переделать на массовое удаление */
-        foreach ($orderDTO->products as $product) {
-            for ($i = 0; $i <= $product['quantity']; $i++) {
-                $this->cartManager->remove(
-                    new UpdateCartDTO($product['id']),
-                    $user
-                );
+            // Обработка адреса для курьерской доставки
+            if ($deliveryMethod == DeliveryMethod::COURIER) {
+                $address = $this->addressManager->getAddress($orderDTO->address, $user);
+                $order->setAddress($address);
+                $this->entityManager->persist($address);
             }
+
+            $this->entityManager->persist($order);
+            $this->entityManager->flush();
+
+            // Удаление товаров из корзины
+            /* TODO Удаление из корзины тех товары, которые попали в заказ - переделать на массовое удаление */
+            foreach ($orderDTO->products as $product) {
+
+                for ($i = 0; $i <= $product['quantity']; $i++) {
+                    $this->cartManager->remove(
+                        new UpdateCartDTO($product['id']),
+                        $user
+                    );
+                }
+            }
+
+            $this->entityManager->commit();
+        } catch (Exception $e) {
+            $this->entityManager->rollback();
+            throw $e;
         }
     }
 }

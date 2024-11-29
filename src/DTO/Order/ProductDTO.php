@@ -17,10 +17,6 @@ final class ProductDTO
         #[Assert\NotBlank]
         #[Assert\Type('integer')]
         #[Assert\GreaterThan(0)]
-        public int $version,
-        #[Assert\NotBlank]
-        #[Assert\Type('integer')]
-        #[Assert\GreaterThan(0)]
         public int $quantity,
     ) {
     }

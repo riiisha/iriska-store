@@ -83,17 +83,13 @@ readonly class CartManager
     public function remove(UpdateCartDTO $updateCartDTO, User $user): void
     {
         $cart = $user->getCart();
+
         if (!$cart) {
             return;
         }
 
-        $product = $this->productRepository->findProductWithLatestVersion($updateCartDTO->productId);
-        if (!$product) {
-            throw new NotFoundHttpException("Товар не найден");
-        }
-
-        $cartItem = $cart->getCartItems()->filter(function (CartItem $item) use ($product): bool {
-            return $item->getProduct()->getId() === $product->getId();
+        $cartItem = $cart->getCartItems()->filter(function (CartItem $item) use ($updateCartDTO): bool {
+            return $item->getProduct()->getId() === $updateCartDTO->productId;
         })->first();
 
         if (!$cartItem) {
