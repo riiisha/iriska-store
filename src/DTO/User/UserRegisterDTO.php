@@ -23,7 +23,7 @@ final class UserRegisterDTO
         public string $phone,
         #[Assert\NotBlank]
         #[Assert\Type('string')]
-        #[PasswordStrength(minScore: PasswordStrength::STRENGTH_WEAK)]
+        #[Assert\Length(min: 6)]
         public string $password,
     ) {
     }

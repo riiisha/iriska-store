@@ -15,7 +15,7 @@ final class UserUpdatePasswordDTO
         public int    $userId,
         #[Assert\NotBlank]
         #[Assert\Type('string')]
-        #[PasswordStrength(minScore: PasswordStrength::STRENGTH_WEAK)]
+        #[Assert\Length(min: 6)]
         public string $newPassword,
     ) {
     }
