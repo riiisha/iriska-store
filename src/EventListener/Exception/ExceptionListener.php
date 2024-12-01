@@ -41,6 +41,8 @@ readonly class ExceptionListener
 
         if ($statusCode >= 500) {
             $this->logger->error('An error occurred', ['exception' => $exception]);
+        } elseif ($statusCode >= 400 and $statusCode !== Response::HTTP_NOT_FOUND) {
+            $this->logger->debug('An error occurred', ['exception' => $exception]);
         }
     }
 }

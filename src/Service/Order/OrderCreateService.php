@@ -13,6 +13,7 @@ use App\Repository\ProductRepository;
 use App\Service\Address\AddressService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 readonly class OrderCreateService
@@ -21,6 +22,7 @@ readonly class OrderCreateService
         private EntityManagerInterface $entityManager,
         private ProductRepository      $productRepository,
         private AddressService         $addressService,
+        private LoggerInterface        $logger
     ) {
     }
 
@@ -35,7 +37,7 @@ readonly class OrderCreateService
         foreach ($orderDTO->products as $product) {
             if (in_array($product['id'], $ids, true)) {
                 throw new Exception(
-                    'Error: Duplicate product ID: ' . $product['id'],
+                    "Error: Duplicate product ID: {$product['id']}.",
                     Response::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
@@ -44,7 +46,10 @@ readonly class OrderCreateService
         }
 
         if ($totalQuantity > 20) {
-            throw new Exception("You cannot order more than 20 items.");
+            throw new Exception(
+                "You cannot order more than 20 items.",
+                Response::HTTP_UNPROCESSABLE_ENTITY
+            );
         }
         $products = $this->productRepository->findLatestVersionsByIdentifiers($ids);
 
@@ -84,12 +89,14 @@ readonly class OrderCreateService
             $this->entityManager->persist($order);
 
             // Очистка корзины
-            $this->cleanCarts($orderDTO, $user);
+            $this->cleaningCart($orderDTO, $user);
 
             $this->entityManager->flush();
             $this->entityManager->commit();
+            $this->logger->debug("Order created (ID: {$order->getId()})");
         } catch (Exception $e) {
             $this->entityManager->rollback();
+            $this->logger->error('Order was not created due to an error:' . $e->getMessage());
             throw $e;
         }
     }
@@ -97,7 +104,7 @@ readonly class OrderCreateService
     /**
      * Очистка корзины
      */
-    private function cleanCarts(OrderDTO $orderDTO, User $user): void
+    private function cleaningCart(OrderDTO $orderDTO, User $user): void
     {
         $cart = $user->getCart();
         foreach ($orderDTO->products as $product) {

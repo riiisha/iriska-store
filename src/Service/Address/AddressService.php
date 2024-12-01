@@ -9,11 +9,13 @@ use App\Entity\Address\House;
 use App\Entity\Address\Street;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
 readonly class AddressService
 {
     public function __construct(
         private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger
     ) {
     }
 
@@ -26,7 +28,9 @@ readonly class AddressService
 
     private function getOrCrateAddress(AddressDTO $addressDTO, User $user): Address
     {
-        $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $addressDTO->city]) ?? $this->createCity($addressDTO->city);
+        $repository = $this->entityManager->getRepository(City::class);
+
+        $city = $repository->findOneBy(['name' => $addressDTO->city]) ?? $this->createCity($addressDTO->city);
         $street = $this->getOrCreateStreet($city, $addressDTO->street);
         $house = $this->getOrCreateHouse($street, $addressDTO->house, $addressDTO->corpus);
 
@@ -39,6 +43,7 @@ readonly class AddressService
             $address = (new Address())->setOwner($user)->setHouse($house);
             $this->entityManager->persist($city);
             $this->entityManager->flush();
+            $this->logger->debug('Create new address');
         }
 
         return $address;
@@ -48,6 +53,7 @@ readonly class AddressService
     {
         $city = (new City())->setName($cityName);
         $this->entityManager->persist($city);
+        $this->logger->debug('Create new city');
 
         return $city;
     }
@@ -61,6 +67,7 @@ readonly class AddressService
         if (!$street) {
             $street = (new Street())->setName($streetName)->setCity($city);
             $this->entityManager->persist($street);
+            $this->logger->debug('Create new street');
         }
 
         return $street;
@@ -75,6 +82,7 @@ readonly class AddressService
         if (!$house) {
             $house = (new House())->setNumber($houseNumber)->setCorpus($houseCorpus)->setStreet($street);
             $this->entityManager->persist($house);
+            $this->logger->debug('Create new house');
         }
         $this->entityManager->flush();
 
