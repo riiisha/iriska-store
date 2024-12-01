@@ -9,13 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
 class Address
 {
-    /* TODO - можно добавить название и комментарии к адресу */
-    /* TODO - можно переделать механизм:
-        добавить форму для изменения адресов в ЛК (метод user/edit),
-        позволить сделать "выбранным" один из них.
-        При оформлении доставки поругаться, если нет "выбранного" адреса, но выбрана доставка на дом.
-        Если все гуд, то отправлять заказ на данный адрес
-    */
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -23,11 +16,21 @@ class Address
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?House $house = null;
+    private House $house;
 
     #[ORM\ManyToOne(inversedBy: 'addresses')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    private User $owner;
+
+    /**
+     * @param House $house
+     * @param User $owner
+     */
+    public function __construct(House $house, User $owner)
+    {
+        $this->house = $house;
+        $this->owner = $owner;
+    }
 
     public function getId(): ?int
     {
@@ -39,22 +42,8 @@ class Address
         return $this->house;
     }
 
-    public function setHouse(?House $house): static
-    {
-        $this->house = $house;
-
-        return $this;
-    }
-
     public function getOwner(): ?User
     {
         return $this->owner;
-    }
-
-    public function setOwner(?User $owner): static
-    {
-        $this->owner = $owner;
-
-        return $this;
     }
 }

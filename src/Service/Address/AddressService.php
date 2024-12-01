@@ -40,7 +40,7 @@ readonly class AddressService
         ]);
 
         if (!$address) {
-            $address = (new Address())->setOwner($user)->setHouse($house);
+            $address = new Address($house, $user);
             $this->entityManager->persist($city);
             $this->entityManager->flush();
             $this->logger->debug('Create new address');
@@ -51,7 +51,7 @@ readonly class AddressService
 
     private function createCity(string $cityName): City
     {
-        $city = (new City())->setName($cityName);
+        $city = new City($cityName);
         $this->entityManager->persist($city);
         $this->logger->debug('Create new city');
 
@@ -65,7 +65,7 @@ readonly class AddressService
         })->first();
 
         if (!$street) {
-            $street = (new Street())->setName($streetName)->setCity($city);
+            $street = new Street($streetName, $city);
             $this->entityManager->persist($street);
             $this->logger->debug('Create new street');
         }
@@ -80,7 +80,7 @@ readonly class AddressService
         })->first();
 
         if (!$house) {
-            $house = (new House())->setNumber($houseNumber)->setCorpus($houseCorpus)->setStreet($street);
+            $house = new House($street, $houseNumber, $houseCorpus);
             $this->entityManager->persist($house);
             $this->logger->debug('Create new house');
         }
