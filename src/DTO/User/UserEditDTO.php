@@ -8,7 +8,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class UserEditDTO
 {
-    /*TODO - переделать роль на array*/
     public function __construct(
         #[Assert\Type('string')]
         #[Assert\Email]
