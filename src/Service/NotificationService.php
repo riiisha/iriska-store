@@ -2,8 +2,7 @@
 
 namespace App\Service;
 
-use App\DTO\Notification\RegistrationNotificationEmailDTO;
-use App\DTO\Notification\RegistrationNotificationSmsDTO;
+use App\DTO\Notification\NotificationDTOInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 
@@ -16,7 +15,7 @@ readonly class NotificationService
 
     }
 
-    public function sendSMS(RegistrationNotificationSmsDTO $notification): void
+    public function sendSMS(NotificationDTOInterface $notification): void
     {
         try {
             $this->kafkaService->send('notification', $notification);
@@ -28,10 +27,17 @@ readonly class NotificationService
             ]);
         }
     }
-    /* TODO
-        public function sendEmail(RegistrationNotificationEmailDTO $notification): void
-        {
-        }
-    */
 
+    public function sendEmail(NotificationDTOInterface $notification): void
+    {
+        try {
+            $this->kafkaService->send('notification', $notification);
+            $this->logger->info('Email sent', ['notification' => json_encode($notification)]);
+        } catch (Exception $e) {
+            $this->logger->error('Email not sent', [
+                'notification' => json_encode($notification),
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
 }

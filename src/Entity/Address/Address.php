@@ -69,6 +69,6 @@ class Address
         $house = $this->house->getNumber();
         $corpus = $this->house->getCorpus();
 
-        return "г. $city, $street, д. $house, к. $corpus";
+        return "г. $city, $street, д. $house" . ($corpus ? ", к. $corpus" : "");
     }
 }

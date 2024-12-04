@@ -16,7 +16,7 @@ class House
     private string $number;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private string $corpus;
+    private ?string $corpus;
 
     #[ORM\ManyToOne(inversedBy: 'houses')]
     #[ORM\JoinColumn(nullable: false)]

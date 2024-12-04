@@ -7,7 +7,7 @@ namespace App\DTO\Notification;
 use App\Enum\MessageType;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class RegistrationNotificationEmailDTO
+final class RegistrationNotificationEmailDTO implements NotificationDTOInterface
 {
     public MessageType $type;
 
