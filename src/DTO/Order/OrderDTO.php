@@ -15,7 +15,7 @@ final class OrderDTO
         #[Assert\Type('string')]
         public string $phone,
         #[Assert\NotBlank(message: "Способ доставки не может быть пустым.")]
-        #[Assert\Choice(choices: ['courier', 'pickup'])]
+        #[Assert\Choice(choices: ['courier', 'selfdelivery'])]
         #[Assert\Type('string')]
         public string $deliveryMethod,
         #[Assert\NotBlank(message: "Список товаров не может быть пустым.")]
