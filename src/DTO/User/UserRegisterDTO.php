@@ -17,8 +17,8 @@ final class UserRegisterDTO
         #[Assert\Type('string')]
         #[Assert\Email]
         public string $email,
-        #[Assert\NotBlank(message: "Номер телефона не может быть пустым.")]
-        #[Assert\Length(max: 16, maxMessage: "Номер телефона слишком длинный.")]
+        #[Assert\NotBlank]
+        #[Assert\Length]
         #[Assert\Type('string')]
         public string $phone,
         #[Assert\NotBlank]
