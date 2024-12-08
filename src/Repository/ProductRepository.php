@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\DTO\Product\ProductFilter;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -32,17 +33,32 @@ class ProductRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findProductsWithLatestVersion()
+    public function findProductsWithLatestVersion(ProductFilter $filter)
     {
-        return $this->createQueryBuilder('p')
+        $query = $this->createQueryBuilder('p')
             ->select('p')
             ->where('p.version = (
                 SELECT MAX(sub.version)
                 FROM App\Entity\Product sub
                 WHERE sub.id = p.id
             )')
-            ->getQuery()
-            ->getResult();
+            ->andWhere('LOWER(p.name) LIKE LOWER(:name)')
+            ->setParameter('name', '%' . $filter->name . '%')
+            ->orderBy('p.id', 'ASC')
+            ->setFirstResult(($filter->page - 1) * $filter->limit)
+            ->setMaxResults($filter->limit);
+
+        if ($filter->minCost !== null) {
+            $query
+                ->andWhere('p.cost >= :minCost')
+                ->setParameter('minCost', $filter->minCost);
+        }
+        if ($filter->maxCost !== null) {
+            $query
+                ->andWhere('p.cost <= :maxCost')
+                ->setParameter('maxCost', $filter->maxCost);
+        }
+        return $query->getQuery()->getResult();
     }
 
     public function findLatestVersionsByIdentifiers(array $ids)
@@ -59,5 +75,18 @@ class ProductRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+
+    public function countProductsWithMaxVersion(): int
+    {
+        $query = $this->createQueryBuilder('p')
+            ->select('COUNT(p.id)')
+            ->where('p.version = (
+            SELECT MAX(sub.version)
+            FROM App\Entity\Product sub
+            WHERE sub.id = p.id
+        )');
+
+        return (int) $query->getQuery()->getSingleScalarResult();
+    }
 
 }

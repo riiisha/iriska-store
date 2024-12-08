@@ -32,6 +32,8 @@ RUN apk update \
 # Install Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
+RUN apk add --no-cache linux-headers
+
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/
 RUN docker-php-ext-install -j$(getconf _NPROCESSORS_ONLN) \
@@ -50,4 +52,4 @@ RUN pecl channel-update pecl.php.net \
     && rm -rf /tmp/pear \
     && echo "extension=rdkafka.so" > /usr/local/etc/php/conf.d/rdkafka.ini \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini \
-    && echo "extension=event.so" > /usr/local/etc/php/conf.d/event.ini \
+    && echo "extension=event.so" > /usr/local/etc/php/conf.d/event.ini

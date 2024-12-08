@@ -3,27 +3,26 @@
 namespace App\Consumer;
 
 use App\DTO\Product\CreateProductDTO;
-use App\Manager\ProductManager;
+use App\Service\Product\ProductService;
 use JMS\Serializer\SerializerBuilder;
 use JMS\Serializer\SerializerInterface;
 use RdKafka\Message;
 use SimPod\Kafka\Clients\Consumer\ConsumerConfig;
 use SimPod\Kafka\Clients\Consumer\KafkaConsumer;
-use SimPod\KafkaBundle\Kafka\Configuration;
 use SimPod\KafkaBundle\Kafka\Clients\Consumer\NamedConsumer;
+use SimPod\KafkaBundle\Kafka\Configuration;
 
 final class ProductConsumer implements NamedConsumer
 {
     private const TIMEOUT_MS = 2000;
     private Configuration $configuration;
     private SerializerInterface $serializer;
-    private ProductManager $productManager;
+    private ProductService $productManager;
 
     public function __construct(
         Configuration  $configuration,
-        ProductManager $productManager,
-    )
-    {
+        ProductService $productManager,
+    ) {
         $this->configuration = $configuration;
         $this->serializer = (new SerializerBuilder())->build();
         $this->productManager = $productManager;

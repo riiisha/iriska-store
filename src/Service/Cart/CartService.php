@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Manager;
+namespace App\Service\Cart;
 
 use App\DTO\Cart\Request\AddToCartDTO;
 use App\DTO\Cart\Request\UpdateCartDTO;
@@ -9,19 +9,16 @@ use App\DTO\Cart\Response\ShowCartDTO;
 use App\Entity\Cart;
 use App\Entity\CartItem;
 use App\Entity\User;
-use App\Repository\CartRepository;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class CartManager
+readonly class CartService
 {
-
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-        private readonly ProductRepository      $productRepository
-    )
-    {
+        private EntityManagerInterface $entityManager,
+        private ProductRepository      $productRepository
+    ) {
     }
 
     /** Просмотр корзины пользователя */
@@ -85,31 +82,21 @@ class CartManager
     public function remove(UpdateCartDTO $updateCartDTO, User $user): void
     {
         $cart = $user->getCart();
+
         if (!$cart) {
             return;
         }
 
-        $product = $this->productRepository->findProductWithLatestVersion($updateCartDTO->productId);
-        if (!$product) {
-            throw new NotFoundHttpException("Товар не найден");
-        }
-
-        $cartItem = $cart->getCartItems()->filter(function (CartItem $item) use ($product): bool {
-            return $item->getProduct()->getId() === $product->getId();
+        $cartItem = $cart->getCartItems()->filter(function (CartItem $item) use ($updateCartDTO): bool {
+            return $item->getProduct()->getId() === $updateCartDTO->productId;
         })->first();
 
         if (!$cartItem) {
             return;
         }
 
-        if ($cartItem->getQuantity() == 1) {
-            $cart->removeCartItem($cartItem);
-            $this->entityManager->persist($cart);
-        } else {
-            $cartItem->setQuantity($cartItem->getQuantity() - 1);
-            $this->entityManager->persist($cartItem);
-        }
-
+        $cart->removeCartItems($cartItem);
+        $this->entityManager->persist($cart);
         $this->entityManager->flush();
     }
 

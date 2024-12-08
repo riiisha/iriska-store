@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Manager;
+namespace App\Service\Address;
 
 use App\DTO\Address\AddressDTO;
 use App\Entity\Address\Address;
@@ -9,13 +9,14 @@ use App\Entity\Address\House;
 use App\Entity\Address\Street;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 
-class AddressManager
+readonly class AddressService
 {
     public function __construct(
-        private readonly EntityManagerInterface $entityManager,
-    )
-    {
+        private EntityManagerInterface $entityManager,
+        private LoggerInterface $logger
+    ) {
     }
 
 
@@ -27,7 +28,9 @@ class AddressManager
 
     private function getOrCrateAddress(AddressDTO $addressDTO, User $user): Address
     {
-        $city = $this->entityManager->getRepository(City::class)->findOneBy(['name' => $addressDTO->city]) ?? $this->createCity($addressDTO->city);
+        $repository = $this->entityManager->getRepository(City::class);
+
+        $city = $repository->findOneBy(['name' => $addressDTO->city]) ?? $this->createCity($addressDTO->city);
         $street = $this->getOrCreateStreet($city, $addressDTO->street);
         $house = $this->getOrCreateHouse($street, $addressDTO->house, $addressDTO->corpus);
 
@@ -37,9 +40,10 @@ class AddressManager
         ]);
 
         if (!$address) {
-            $address = (new Address())->setOwner($user)->setHouse($house);
+            $address = new Address($house, $user);
             $this->entityManager->persist($city);
             $this->entityManager->flush();
+            $this->logger->debug('Create new address');
         }
 
         return $address;
@@ -47,8 +51,9 @@ class AddressManager
 
     private function createCity(string $cityName): City
     {
-        $city = (new City())->setName($cityName);
+        $city = new City($cityName);
         $this->entityManager->persist($city);
+        $this->logger->debug('Create new city');
 
         return $city;
     }
@@ -60,8 +65,9 @@ class AddressManager
         })->first();
 
         if (!$street) {
-            $street = (new Street())->setName($streetName)->setCity($city);
+            $street = new Street($streetName, $city);
             $this->entityManager->persist($street);
+            $this->logger->debug('Create new street');
         }
 
         return $street;
@@ -74,8 +80,9 @@ class AddressManager
         })->first();
 
         if (!$house) {
-            $house = (new House())->setNumber($houseNumber)->setCorpus($houseCorpus)->setStreet($street);
+            $house = new House($street, $houseNumber, $houseCorpus);
             $this->entityManager->persist($house);
+            $this->logger->debug('Create new house');
         }
         $this->entityManager->flush();
 

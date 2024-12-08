@@ -4,6 +4,6 @@ namespace App\Enum;
 
 enum DeliveryMethod: string
 {
-    case PICKUP = 'pickup';
+    case SELF_DELIVERY = 'selfdelivery';
     case COURIER = 'courier';
 }

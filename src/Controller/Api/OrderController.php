@@ -4,7 +4,8 @@ namespace App\Controller\Api;
 
 use App\DTO\Order\OrderDTO;
 use App\Entity\User;
-use App\Manager\OrderManager;
+use App\Service\Order\OrderCreateService;
+use Exception;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,18 +24,20 @@ class OrderController extends AbstractController
     private Serializer $serializer;
 
     public function __construct(
-        private readonly OrderManager $manager,
-    )
-    {
+        private readonly OrderCreateService $orderCreateService,
+    ) {
         $this->serializer = (new SerializerBuilder())->build();
     }
 
+    /**
+     * @throws Exception
+     */
     #[Route(path: '', name: 'api_order_create', methods: ['POST'])]
     public function createAction(#[MapRequestPayload] OrderDTO $orderDTO): Response
     {
         /** @var User $user */
         $user = $this->getUser();
-        $this->manager->create($orderDTO, $user);
+        $this->orderCreateService->create($orderDTO, $user);
         return new JsonResponse([], Response::HTTP_CREATED);
     }
 
@@ -45,6 +48,7 @@ class OrderController extends AbstractController
         $user = $this->getUser();
 
         $orders = $user->getOrders();
+
         return new JsonResponse($this->serializer->serialize($orders, 'json'), Response::HTTP_OK, [], true);
     }
 

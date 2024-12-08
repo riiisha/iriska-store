@@ -15,11 +15,11 @@ class Street
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $name;
 
     #[ORM\ManyToOne(inversedBy: 'streets')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?City $city = null;
+    private City $city;
 
     /**
      * @var Collection<int, House>
@@ -27,8 +27,10 @@ class Street
     #[ORM\OneToMany(targetEntity: House::class, mappedBy: 'street', orphanRemoval: true)]
     private Collection $houses;
 
-    public function __construct()
+    public function __construct(string $name, City $city)
     {
+        $this->name = $name;
+        $this->city = $city;
         $this->houses = new ArrayCollection();
     }
 
@@ -42,23 +44,9 @@ class Street
         return $this->name;
     }
 
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getCity(): ?City
     {
         return $this->city;
-    }
-
-    public function setCity(?City $city): static
-    {
-        $this->city = $city;
-
-        return $this;
     }
 
     /**
@@ -67,27 +55,5 @@ class Street
     public function getHouses(): Collection
     {
         return $this->houses;
-    }
-
-    public function addHouse(House $house): static
-    {
-        if (!$this->houses->contains($house)) {
-            $this->houses->add($house);
-            $house->setStreet($this);
-        }
-
-        return $this;
-    }
-
-    public function removeHouse(House $house): static
-    {
-        if ($this->houses->removeElement($house)) {
-            // set the owning side to null (unless already changed)
-            if ($house->getStreet() === $this) {
-                $house->setStreet(null);
-            }
-        }
-
-        return $this;
     }
 }

@@ -2,7 +2,8 @@
 
 namespace App\Controller\Api;
 
-use App\Repository\ProductRepository;
+use App\DTO\Product\ProductFilter;
+use App\Service\Product\ProductService;
 use JMS\Serializer\Serializer;
 use JMS\Serializer\SerializerBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -19,17 +20,23 @@ class ProductController extends AbstractController
     private Serializer $serializer;
 
     public function __construct(
-        private readonly ProductRepository $productRepository,
-    )
-    {
+        private readonly ProductService $productService,
+    ) {
         $this->serializer = (new SerializerBuilder())->build();
     }
 
     #[Route(path: '', name: 'api_product_list', methods: ['GET'])]
     public function listAction(Request $request): Response
     {
-        /* TODO - добавить пагинацию */
-        $products = $this->productRepository->findProductsWithLatestVersion();
+        $filter = new ProductFilter(
+            (int)$request->query->get('page', 1),
+            (int)$request->query->get('limit', 10),
+            $request->query->get('name'),
+            $request->query->get('minCost') ? (int)$request->query->get('minCost') : null,
+            $request->query->get('maxCost') ? (int)$request->query->get('maxCost') : null,
+        );
+
+        $products = $this->productService->getList($filter);
         return new JsonResponse($this->serializer->serialize($products, 'json'), Response::HTTP_OK, [], true);
     }
 }

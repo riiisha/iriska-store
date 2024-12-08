@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use JsonException;
 use RdKafka\Conf;
 use RdKafka\Producer;
 use RdKafka\ProducerTopic;
@@ -27,6 +28,9 @@ class KafkaService
         $this->producer->addBrokers($this->configuration->getBootstrapServers());
     }
 
+    /**
+     * @throws JsonException
+     */
     public function send(string $name, mixed $data, int $partition = RD_KAFKA_PARTITION_UA, int $timeout = self::DEFAULT_TIMEOUT): void
     {
         $payload = json_encode($data, JSON_THROW_ON_ERROR);

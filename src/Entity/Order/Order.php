@@ -10,11 +10,15 @@ use App\Repository\OrderRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Exception;
+use Symfony\Component\HttpFoundation\Response;
 
 #[ORM\Entity(repositoryClass: OrderRepository::class)]
 #[ORM\Table(name: '`order`')]
 class Order
 {
+    const MAX_QUANTITY_ORDER_ITEMS = 20;
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -22,16 +26,16 @@ class Order
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner = null;
+    private ?User $owner;
 
-    #[ORM\Column(length: 16)]
-    private ?string $phone = null;
+    #[ORM\Column(length: 15)]
+    private ?string $phone;
 
     #[ORM\Column(enumType: DeliveryMethod::class)]
-    private ?DeliveryMethod $deliveryMethod = null;
+    private ?DeliveryMethod $deliveryMethod;
 
     #[ORM\Column(enumType: OrderStatus::class)]
-    private ?OrderStatus $status = null;
+    private ?OrderStatus $status;
 
     #[ORM\ManyToOne]
     private ?Address $address = null;
@@ -42,8 +46,23 @@ class Order
     #[ORM\OneToMany(targetEntity: OrderItem::class, mappedBy: 'order', cascade: ['persist'], orphanRemoval: true)]
     private Collection $orderItems;
 
-    public function __construct()
+    /**
+     * @throws Exception
+     */
+    public function __construct(string $phone, User $owner, DeliveryMethod $deliveryMethod, ?Address $address = null)
     {
+        $this->phone = $phone;
+        $this->owner = $owner;
+        $this->deliveryMethod = $deliveryMethod;
+        $this->status = OrderStatus::PAID;
+
+        if ($deliveryMethod == DeliveryMethod::COURIER) {
+            if (!$address) {
+                throw new Exception("Address cannot be empty.", Response::HTTP_UNPROCESSABLE_ENTITY);
+            }
+            $this->address = $address;
+        }
+
         $this->orderItems = new ArrayCollection();
     }
 
@@ -69,23 +88,9 @@ class Order
         return $this->phone;
     }
 
-    public function setPhone(string $phone): static
-    {
-        $this->phone = $phone;
-
-        return $this;
-    }
-
     public function getDeliveryMethod(): ?DeliveryMethod
     {
         return $this->deliveryMethod;
-    }
-
-    public function setDeliveryMethod(DeliveryMethod $deliveryMethod): static
-    {
-        $this->deliveryMethod = $deliveryMethod;
-
-        return $this;
     }
 
     public function getStatus(): ?OrderStatus
@@ -103,13 +108,6 @@ class Order
     public function getAddress(): ?Address
     {
         return $this->address;
-    }
-
-    public function setAddress(?Address $address): static
-    {
-        $this->address = $address;
-
-        return $this;
     }
 
     /**

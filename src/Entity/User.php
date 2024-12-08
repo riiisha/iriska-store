@@ -8,6 +8,7 @@ use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use JMS\Serializer\Annotation as Serializer;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -19,22 +20,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Serializer\Groups(['list'])]
     private int $id;
 
     #[ORM\Column(length: 255)]
+    #[Serializer\Groups(['list'])]
     private string $name;
 
     #[ORM\Column(length: 180)]
+    #[Serializer\Groups(['list'])]
     private string $email;
 
     #[ORM\Column(length: 15)]
+    #[Serializer\Groups(['list'])]
     private string $phone;
 
     /**
      * @var list<string> The user roles
      */
     #[ORM\Column]
-    private array $roles = [];
+    #[Serializer\Groups(['list'])]
+    private array $roles;
 
     /**
      * @var string The hashed password
@@ -57,10 +63,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Address::class, mappedBy: 'owner', orphanRemoval: true)]
     private Collection $addresses;
 
-    public function __construct()
-    {
+    public function __construct(
+        string $name,
+        string $email,
+        string $phone,
+        array  $roles = ['ROLE_USER']
+    ) {
+        $this->name = $name;
+        $this->email = $email;
+        $this->phone = $phone;
+        $this->roles = $roles;
         $this->orders = new ArrayCollection();
         $this->addresses = new ArrayCollection();
+    }
+
+    public function update(
+        string $name,
+        string $phone,
+        array  $roles = ['ROLE_USER']
+    ): void {
+        $this->name = $name;
+        $this->phone = $phone;
+        $this->roles = $roles;
     }
 
     /**
@@ -83,35 +107,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->name;
     }
 
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     public function getEmail(): string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
     public function getPhone(): string
     {
         return $this->phone;
-    }
-
-    public function setPhone(string $phone): static
-    {
-        $this->phone = $phone;
-
-        return $this;
     }
 
     /**
@@ -126,16 +129,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
-    }
-
-    /**
-     * @param list<string> $roles
-     */
-    public function setRoles(array $roles): static
-    {
-        $this->roles = $roles;
-
-        return $this;
     }
 
     /**

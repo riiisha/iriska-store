@@ -12,18 +12,14 @@ final class AddressDTO
         #[Assert\NotBlank]
         #[Assert\Type('string')]
         public string $city,
-
         #[Assert\NotBlank]
         #[Assert\Type('string')]
         public string $street,
-
         #[Assert\NotBlank]
         #[Assert\Type('string')]
         public string $house,
-
         #[Assert\Type('string')]
         public ?string $corpus = null,
-    )
-    {
+    ) {
     }
 }

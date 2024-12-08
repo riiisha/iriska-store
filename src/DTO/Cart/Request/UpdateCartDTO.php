@@ -13,7 +13,6 @@ final class UpdateCartDTO
         #[Assert\GreaterThan(0)]
         #[Assert\Type('integer')]
         public int $productId
-    )
-    {
+    ) {
     }
 }

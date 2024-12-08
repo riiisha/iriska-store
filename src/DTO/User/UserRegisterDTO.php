@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\DTO\User;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 final class UserRegisterDTO
 {
-    /* TODO - можно добавить ограничение на длину пароля */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('string')]
@@ -17,12 +17,13 @@ final class UserRegisterDTO
         #[Assert\Type('string')]
         #[Assert\Email]
         public string $email,
-        #[Assert\NotBlank(message: "Номер телефона не может быть пустым.")]
-        #[Assert\Length(max: 16, maxMessage: "Номер телефона слишком длинный.")]
+        #[Assert\NotBlank]
+        #[Assert\Length(max: 15)]
         #[Assert\Type('string')]
         public string $phone,
         #[Assert\NotBlank]
         #[Assert\Type('string')]
+        #[Assert\Length(min: 6)]
         public string $password,
     ) {
     }

@@ -5,7 +5,7 @@ namespace App\Controller\Api;
 use App\DTO\Cart\Request\AddToCartDTO;
 use App\DTO\Cart\Request\UpdateCartDTO;
 use App\Entity\User;
-use App\Manager\CartManager;
+use App\Service\Cart\CartService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,9 +20,8 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class CartController extends AbstractController
 {
     public function __construct(
-        private readonly CartManager $manager,
-    )
-    {
+        private readonly CartService $cartService,
+    ) {
     }
 
     #[Route(path: '', name: 'api_cart_show', methods: ['GET'])]
@@ -30,7 +29,7 @@ class CartController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $cart = $this->manager->show($user);
+        $cart = $this->cartService->show($user);
         return new JsonResponse($cart, Response::HTTP_OK);
     }
 
@@ -39,7 +38,7 @@ class CartController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $this->manager->add($addToCartDTO, $user);
+        $this->cartService->add($addToCartDTO, $user);
         return new JsonResponse([], Response::HTTP_CREATED);
     }
 
@@ -48,7 +47,7 @@ class CartController extends AbstractController
     {
         /** @var User $user */
         $user = $this->getUser();
-        $this->manager->remove($updateCartDTO, $user);
+        $this->cartService->remove($updateCartDTO, $user);
         return new JsonResponse([], Response::HTTP_OK);
     }
 

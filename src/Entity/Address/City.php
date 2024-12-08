@@ -15,7 +15,7 @@ class City
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    private string $name;
 
     /**
      * @var Collection<int, Street>
@@ -23,8 +23,9 @@ class City
     #[ORM\OneToMany(targetEntity: Street::class, mappedBy: 'city')]
     private Collection $streets;
 
-    public function __construct()
+    public function __construct(string $name)
     {
+        $this->name = $name;
         $this->streets = new ArrayCollection();
     }
 
@@ -38,40 +39,11 @@ class City
         return $this->name;
     }
 
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Street>
      */
     public function getStreets(): Collection
     {
         return $this->streets;
-    }
-
-    public function addStreet(Street $street): static
-    {
-        if (!$this->streets->contains($street)) {
-            $this->streets->add($street);
-            $street->setCity($this);
-        }
-
-        return $this;
-    }
-
-    public function removeStreet(Street $street): static
-    {
-        if ($this->streets->removeElement($street)) {
-            // set the owning side to null (unless already changed)
-            if ($street->getCity() === $this) {
-                $street->setCity(null);
-            }
-        }
-
-        return $this;
     }
 }

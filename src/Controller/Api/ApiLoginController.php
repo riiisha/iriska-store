@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Api;
 
 use App\Entity\User;
 use DateInterval;
@@ -31,7 +31,8 @@ class ApiLoginController extends AbstractController
                 'userId' => $user->getId(),
                 'userIdentifier' => $user->getUserIdentifier()
             ],
-            $this->publicApiToken, 'HS256'
+            $this->publicApiToken,
+            'HS256'
         );
 
         return $this->json([
