@@ -68,11 +68,13 @@ readonly class OrderCreateService
         try {
             $this->entityManager->beginTransaction();
 
-            $order = new Order();
-            $order->setPhone($orderDTO->phone);
-            $order->setOwner($user);
-            $order->setDeliveryMethod($deliveryMethod);
-            $order->setStatus(OrderStatus::PAID);
+            // Обработка адреса для курьерской доставки
+            if ($deliveryMethod == DeliveryMethod::COURIER) {
+                $address = $this->addressService->getAddress($orderDTO->address, $user);
+                $this->entityManager->persist($address);
+            }
+
+            $order = new Order($orderDTO->phone, $user, $deliveryMethod, $address ?? null);
 
             foreach ($orderDTO->products as $item) {
                 foreach ($products as $product) {
@@ -86,12 +88,6 @@ readonly class OrderCreateService
                 }
             }
 
-            // Обработка адреса для курьерской доставки
-            if ($deliveryMethod == DeliveryMethod::COURIER) {
-                $address = $this->addressService->getAddress($orderDTO->address, $user);
-                $order->setAddress($address);
-                $this->entityManager->persist($address);
-            }
             $this->entityManager->persist($order);
 
             // Очистка корзины
@@ -117,6 +113,11 @@ readonly class OrderCreateService
     private function cleaningCart(OrderDTO $orderDTO, User $user): void
     {
         $cart = $user->getCart();
+
+        if(!$cart){
+            return;
+        }
+
         foreach ($orderDTO->products as $product) {
             $cartItem = $cart->getCartItems()->filter(function (CartItem $item) use ($product): bool {
                 return $item->getProduct()->getId() === $product['id'];

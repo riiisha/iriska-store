@@ -15,7 +15,7 @@ use Throwable;
 readonly class ExceptionListener
 {
     public function __construct(
-        private LoggerInterface $logger,
+        private LoggerInterface     $logger,
         private ?ContainerInterface $container = null
     ) {
     }
@@ -27,8 +27,8 @@ readonly class ExceptionListener
     {
         $exception = $event->getThrowable();
 
-        if ($this->container->get('kernel')->isDebug()) {
-           throw $exception;
+        if ($this->isDebug()) {
+            throw $exception;
         }
 
         $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
@@ -53,6 +53,15 @@ readonly class ExceptionListener
             $this->logger->error('An error occurred', ['exception' => $exception]);
         } elseif ($statusCode >= 400 and $statusCode !== Response::HTTP_NOT_FOUND) {
             $this->logger->debug('An error occurred', ['exception' => $exception]);
+        }
+    }
+
+    private function isDebug()
+    {
+        try {
+            return $this->container->get('kernel')->isDebug();
+        } catch (Throwable) {
+            return false;
         }
     }
 }
