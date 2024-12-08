@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Api\Order;
 
+use App\Entity\Order\Order;
 use App\Enum\DeliveryMethod;
 use App\Tests\Controller\Api\BaseWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,6 +59,31 @@ class OrderCreateControllerTest extends BaseWebTestCase
 
         $data = $this->getData();
         $data['phone'] = '79111111111111111';
+
+        $this->postRequest($this->getUrl(), $data);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function testCreateActionFailureExceedsMaxQuantity()
+    {
+        $this->loginUser();
+
+        $data = $this->getData();
+        $data['products'] = [['id' => 1, 'quantity' => Order::MAX_QUANTITY_ORDER_ITEMS + 1]];
+
+        $this->postRequest($this->getUrl(), $data);
+
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
+    }
+
+    public function testCreateActionFailureEmptyAddressForCourier()
+    {
+        $this->loginUser();
+
+        $data = $this->getData();
+        $data['address'] = null; // Пустой адрес для курьерской доставки
+        $data['deliveryMethod'] = DeliveryMethod::COURIER->value;
 
         $this->postRequest($this->getUrl(), $data);
 
