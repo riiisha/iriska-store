@@ -75,6 +75,30 @@ class BaseWebTestCase extends WebTestCase
         $this->client->request(Request::METHOD_GET, $url, $params);
     }
 
+    protected function putRequest($url, $data): void
+    {
+        $this->client->request(
+            Request::METHOD_PUT,
+            $url,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode($data)
+        );
+    }
+
+    protected function patchRequest($url, $data): void
+    {
+        $this->client->request(
+            Request::METHOD_PATCH,
+            $url,
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            json_encode($data)
+        );
+    }
+
     protected function deleteRequest($url, $data): void
     {
         $this->client->request(
