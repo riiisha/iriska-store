@@ -18,7 +18,7 @@ class AdminUserEditControllerTest extends BaseWebTestCase
         return [
             'email' => 'user@example.com',
             'name' => 'test',
-            'phone'=> '+79811111111',
+            'phone' => '+79811111111',
             'role' => 'ROLE_USER'
         ];
     }
