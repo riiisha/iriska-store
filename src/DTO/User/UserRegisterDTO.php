@@ -18,7 +18,7 @@ final class UserRegisterDTO
         #[Assert\Email]
         public string $email,
         #[Assert\NotBlank]
-        #[Assert\Length]
+        #[Assert\Length(max: 15)]
         #[Assert\Type('string')]
         public string $phone,
         #[Assert\NotBlank]

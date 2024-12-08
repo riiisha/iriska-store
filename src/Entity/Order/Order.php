@@ -26,7 +26,7 @@ class Order
     #[ORM\JoinColumn(nullable: false)]
     private ?User $owner;
 
-    #[ORM\Column(length: 16)]
+    #[ORM\Column(length: 15)]
     private ?string $phone;
 
     #[ORM\Column(enumType: DeliveryMethod::class)]

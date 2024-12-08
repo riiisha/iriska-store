@@ -11,7 +11,7 @@ final class OrderDTO
 {
     public function __construct(
         #[Assert\NotBlank(message: "Phone cannot be empty.")]
-        #[Assert\Length(max: 16, maxMessage: "Phone is too long.")]
+        #[Assert\Length(max: 15, maxMessage: "Phone is too long.")]
         #[Assert\Type('string')]
         public string $phone,
         #[Assert\NotBlank(message: "DeliveryMethod cannot be empty.")]

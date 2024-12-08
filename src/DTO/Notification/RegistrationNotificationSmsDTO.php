@@ -14,7 +14,7 @@ final class RegistrationNotificationSmsDTO implements NotificationDTOInterface
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('string')]
-        #[Assert\Length(max: 16)]
+        #[Assert\Length(max: 15)]
         public string $userPhone,
         #[Assert\NotBlank]
         #[Assert\Regex(
