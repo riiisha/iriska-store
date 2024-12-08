@@ -12,7 +12,6 @@ use App\Entity\Order\OrderItem;
 use App\Entity\User;
 use App\Enum\DeliveryMethod;
 use App\Enum\NotificationType;
-use App\Enum\OrderStatus;
 use App\Repository\ProductRepository;
 use App\Service\Address\AddressService;
 use App\Service\NotificationService;
@@ -20,6 +19,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 readonly class OrderCreateService
 {
@@ -42,19 +42,20 @@ readonly class OrderCreateService
         $totalQuantity = 0;
         foreach ($orderDTO->products as $product) {
             if (in_array($product['id'], $ids, true)) {
-                throw new Exception(
+                throw new HttpException(
+                    Response::HTTP_UNPROCESSABLE_ENTITY,
                     "Error: Duplicate product ID: {$product['id']}.",
-                    Response::HTTP_UNPROCESSABLE_ENTITY
                 );
             }
             $ids[] = $product['id'];
             $totalQuantity += $product['quantity'];
         }
 
-        if ($totalQuantity > 20) {
-            throw new Exception(
-                "You cannot order more than 20 items.",
-                Response::HTTP_UNPROCESSABLE_ENTITY
+        if ($totalQuantity > Order::MAX_QUANTITY_ORDER_ITEMS) {
+            throw new HttpException(
+                Response::HTTP_UNPROCESSABLE_ENTITY,
+                "You cannot order more than " . Order::MAX_QUANTITY_ORDER_ITEMS . " items."
+
             );
         }
         $products = $this->productRepository->findLatestVersionsByIdentifiers($ids);
@@ -62,7 +63,7 @@ readonly class OrderCreateService
         $deliveryMethod = DeliveryMethod::from($orderDTO->deliveryMethod);
 
         if (!$orderDTO->address && $deliveryMethod == DeliveryMethod::COURIER) {
-            throw new Exception("Address cannot be empty.", Response::HTTP_UNPROCESSABLE_ENTITY);
+            throw new HttpException(Response::HTTP_UNPROCESSABLE_ENTITY,"Address cannot be empty.");
         }
 
         try {
