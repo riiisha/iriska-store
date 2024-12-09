@@ -3,7 +3,6 @@
 namespace App\EventListener\Exception;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,8 +14,8 @@ use Throwable;
 readonly class ExceptionListener
 {
     public function __construct(
-        private LoggerInterface     $logger,
-        private ?ContainerInterface $container = null
+        private LoggerInterface $logger,
+        private string          $appEnv
     ) {
     }
 
@@ -56,12 +55,8 @@ readonly class ExceptionListener
         }
     }
 
-    private function isDebug()
+    private function isDebug(): bool
     {
-        try {
-            return $this->container->get('kernel')->isDebug();
-        } catch (Throwable) {
-            return false;
-        }
+        return 'dev' === $this->appEnv;
     }
 }
