@@ -55,7 +55,6 @@ readonly class OrderCreateService
             throw new HttpException(
                 Response::HTTP_UNPROCESSABLE_ENTITY,
                 "You cannot order more than " . Order::MAX_QUANTITY_ORDER_ITEMS . " items."
-
             );
         }
         $products = $this->productRepository->findLatestVersionsByIdentifiers($ids);
@@ -63,7 +62,7 @@ readonly class OrderCreateService
         $deliveryMethod = DeliveryMethod::from($orderDTO->deliveryMethod);
 
         if (!$orderDTO->address && $deliveryMethod == DeliveryMethod::COURIER) {
-            throw new HttpException(Response::HTTP_UNPROCESSABLE_ENTITY,"Address cannot be empty.");
+            throw new HttpException(Response::HTTP_UNPROCESSABLE_ENTITY, "Address cannot be empty.");
         }
 
         try {
@@ -115,7 +114,7 @@ readonly class OrderCreateService
     {
         $cart = $user->getCart();
 
-        if(!$cart){
+        if (!$cart) {
             return;
         }
 

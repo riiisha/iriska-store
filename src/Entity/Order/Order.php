@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[ORM\Table(name: '`order`')]
 class Order
 {
-    const MAX_QUANTITY_ORDER_ITEMS = 20;
+    public const MAX_QUANTITY_ORDER_ITEMS = 20;
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
