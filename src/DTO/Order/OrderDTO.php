@@ -9,6 +9,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class OrderDTO
 {
+    /**
+     * @param string $phone
+     * @param string $deliveryMethod
+     * @param ProductDTO[] $products
+     * @param AddressDTO|null $address
+     */
     public function __construct(
         #[Assert\NotBlank(message: "Phone cannot be empty.")]
         #[Assert\Length(max: 15, maxMessage: "Phone is too long.")]
@@ -19,6 +25,23 @@ final class OrderDTO
         #[Assert\Type('string')]
         public string $deliveryMethod,
         #[Assert\NotBlank(message: "Products cannot be empty.")]
+        #[Assert\All(
+            new Assert\Collection([
+                'id' => [
+                    new Assert\Type('integer'),
+                    new Assert\NotBlank,
+                    new Assert\GreaterThan(0),
+                ],
+                'quantity' => [
+                    new Assert\Type('integer'),
+                    new Assert\NotBlank,
+                    new Assert\GreaterThan(0),
+                ],
+
+            ],
+                allowExtraFields: false,
+                allowMissingFields: false
+            ))]
         public array $products,
         #[Assert\Valid]
         public ?AddressDTO $address,
