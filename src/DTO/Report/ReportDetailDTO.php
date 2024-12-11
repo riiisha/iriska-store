@@ -13,7 +13,7 @@ class ReportDetailDTO
     #[Assert\Type('string')]
     public string $error,
     #[Assert\Type('string')]
-    public ?string $message
+    public ?string $message = null
     ){
     }
 }

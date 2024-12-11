@@ -2,6 +2,7 @@
 
 namespace App\Service\Kafka;
 
+use App\DTO\Report\ReportResponseDTO;
 use SimPod\KafkaBundle\Kafka\Configuration;
 
 class ReportReadyKafkaService extends AbstractKafkaService
@@ -13,9 +14,8 @@ class ReportReadyKafkaService extends AbstractKafkaService
         parent::__construct($configuration, self::TOPIC_NAME);
     }
 
-    public function send(): void
+    public function send(ReportResponseDTO $reportResponseDTO): void
     {
-        /*TODO */
-        /*$this->sendMessage();*/
+        $this->sendMessage($reportResponseDTO);
     }
 }
