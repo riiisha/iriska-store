@@ -11,6 +11,10 @@ final class RegistrationNotificationEmailDTO implements NotificationDTOInterface
 {
     public MessageType $type;
 
+    /**
+     * @param string $userEmail
+     * @param string $promoId
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Email]

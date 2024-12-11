@@ -8,6 +8,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class UserEditDTO
 {
+    /**
+     * @param string $email
+     * @param string $name
+     * @param string $phone
+     * @param string $role
+     */
     public function __construct(
         #[Assert\Type('string')]
         #[Assert\Email]

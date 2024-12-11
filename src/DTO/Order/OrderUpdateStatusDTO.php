@@ -18,6 +18,10 @@ final class OrderUpdateStatusDTO
         OrderStatus::RECEIVED->value,
     ];
 
+    /**
+     * @param int $orderId
+     * @param string $newStatus
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('integer')]

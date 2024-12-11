@@ -8,6 +8,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class ShowCartDTO
 {
+    /**
+     * @param array $cartItems
+     * @param int $totalCost
+     */
     public function __construct(
         #[Assert\All([
             new Assert\Type(CartItemDTO::class),

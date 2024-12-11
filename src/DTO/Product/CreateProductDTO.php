@@ -8,6 +8,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class CreateProductDTO
 {
+    /**
+     * @param int $id
+     * @param int $version
+     * @param string $name
+     * @param MeasurementDTO $measurements
+     * @param string $description
+     * @param int $cost
+     * @param int $tax
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('integer')]

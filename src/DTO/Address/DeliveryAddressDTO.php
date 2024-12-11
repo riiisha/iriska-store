@@ -8,6 +8,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class DeliveryAddressDTO
 {
+    /**
+     * @param string $fullAddress
+     * @param int|null $kladrId
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('string')]

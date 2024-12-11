@@ -5,10 +5,16 @@ declare(strict_types=1);
 namespace App\DTO\Order;
 
 use App\DTO\Address\AddressDTO;
+use App\Enum\DeliveryMethod;
 use Symfony\Component\Validator\Constraints as Assert;
 
 final class OrderDTO
 {
+    public const DELIVERY_TYPES = [
+        DeliveryMethod::SELF_DELIVERY->value,
+        DeliveryMethod::COURIER->value,
+    ];
+
     /**
      * @param string $phone
      * @param string $deliveryMethod
@@ -21,7 +27,7 @@ final class OrderDTO
         #[Assert\Type('string')]
         public string $phone,
         #[Assert\NotBlank(message: "DeliveryMethod cannot be empty.")]
-        #[Assert\Choice(choices: ['courier', 'selfdelivery'])]
+        #[Assert\Choice(choices: self::DELIVERY_TYPES)]
         #[Assert\Type('string')]
         public string $deliveryMethod,
         #[Assert\NotBlank(message: "Products cannot be empty.")]

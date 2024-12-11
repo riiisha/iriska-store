@@ -9,6 +9,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class ProductDTO
 {
+    /**
+     * @param int $id
+     * @param int $quantity
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('integer')]

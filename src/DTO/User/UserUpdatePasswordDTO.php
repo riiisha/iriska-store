@@ -9,6 +9,10 @@ use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 final class UserUpdatePasswordDTO
 {
+    /**
+     * @param int $userId
+     * @param string $newPassword
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('integer')]

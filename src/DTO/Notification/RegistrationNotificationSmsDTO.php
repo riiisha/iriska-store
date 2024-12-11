@@ -11,6 +11,10 @@ final class RegistrationNotificationSmsDTO implements NotificationDTOInterface
 {
     public MessageType $type;
 
+    /**
+     * @param string $userPhone
+     * @param string $promoId
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('string')]

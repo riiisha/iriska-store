@@ -6,6 +6,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class MeasurementDTO
 {
+    /**
+     * @param int $weight
+     * @param int $height
+     * @param int $width
+     * @param int $length
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('integer')]

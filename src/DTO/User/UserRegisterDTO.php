@@ -9,6 +9,12 @@ use Symfony\Component\Validator\Constraints\PasswordStrength;
 
 final class UserRegisterDTO
 {
+    /**
+     * @param string $name
+     * @param string $email
+     * @param string $phone
+     * @param string $password
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('string')]

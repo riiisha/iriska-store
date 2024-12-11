@@ -8,6 +8,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 final class AddressDTO
 {
+    /**
+     * @param string $city
+     * @param string $street
+     * @param string $house
+     * @param string|null $corpus
+     */
     public function __construct(
         #[Assert\NotBlank]
         #[Assert\Type('string')]

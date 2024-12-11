@@ -8,6 +8,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ReportDTO
 {
+    /**
+     * @param string $productName
+     * @param int $price
+     * @param int $amount
+     * @param UserDTO $user
+     */
     public function __construct(
         #[Assert\NotBlank(message: "ProductName cannot be empty.")]
         #[Assert\Type('string')]
