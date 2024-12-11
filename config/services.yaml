@@ -27,6 +27,9 @@ services:
     App\Consumer\ProductConsumer:
         arguments:
 
+    App\Consumer\ReportConsumer:
+        arguments:
+
     App\EventListener\User\UserRegisterEventListener:
         tags:
             - { name: 'kernel.event_listener', event: 'user_register', method: 'onUserRegister' }

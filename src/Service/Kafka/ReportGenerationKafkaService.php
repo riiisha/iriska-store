@@ -15,6 +15,6 @@ class ReportGenerationKafkaService extends AbstractKafkaService
 
     public function send(string $reportId): void
     {
-        $this->sendMessage($reportId);
+        $this->sendMessage(['reportId' => $reportId]);
     }
 }
