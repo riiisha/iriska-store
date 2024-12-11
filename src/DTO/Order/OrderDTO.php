@@ -26,22 +26,24 @@ final class OrderDTO
         public string $deliveryMethod,
         #[Assert\NotBlank(message: "Products cannot be empty.")]
         #[Assert\All(
-            new Assert\Collection([
+            new Assert\Collection(
+                [
                 'id' => [
                     new Assert\Type('integer'),
-                    new Assert\NotBlank,
+                    new Assert\NotBlank(),
                     new Assert\GreaterThan(0),
                 ],
                 'quantity' => [
                     new Assert\Type('integer'),
-                    new Assert\NotBlank,
+                    new Assert\NotBlank(),
                     new Assert\GreaterThan(0),
                 ],
 
             ],
                 allowExtraFields: false,
                 allowMissingFields: false
-            ))]
+            )
+        )]
         public array $products,
         #[Assert\Valid]
         public ?AddressDTO $address,

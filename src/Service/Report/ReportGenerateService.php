@@ -15,8 +15,7 @@ readonly class ReportGenerateService
     public function __construct(
         private ReportReadyKafkaService $kafkaService,
         private OrderItemRepository     $orderItemRepository
-    )
-    {
+    ) {
     }
 
     public function generateReport(string $reportId): void
@@ -43,7 +42,8 @@ readonly class ReportGenerateService
             $reportResponse = new ReportResponseDTO($reportId, 'success');
         } catch (Throwable $exception) {
             $details = new ReportDetailDTO(
-                $exception->getMessage(), $exception->getTraceAsString()
+                $exception->getMessage(),
+                $exception->getTraceAsString()
             );
             $reportResponse = new ReportResponseDTO($reportId, 'fail', $details);
         }

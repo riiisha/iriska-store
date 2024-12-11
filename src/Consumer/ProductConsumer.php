@@ -18,8 +18,7 @@ final class ProductConsumer extends AbstractConsumer
         Configuration           $configuration,
         LoggerInterface         $logger,
         readonly ProductService $productManager,
-    )
-    {
+    ) {
         parent::__construct($configuration, $logger);
         $this->serializer = (new SerializerBuilder())->build();
     }
@@ -34,7 +33,7 @@ final class ProductConsumer extends AbstractConsumer
         return 'product';
     }
 
-    function processMessage(Message $message): void
+    protected function processMessage(Message $message): void
     {
         $newProduct = $this->serializer->deserialize($message->payload, CreateProductDTO::class, 'json');
         $this->productManager->createOrUpdateProduct($newProduct);

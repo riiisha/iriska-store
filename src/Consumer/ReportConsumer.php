@@ -9,13 +9,11 @@ use SimPod\KafkaBundle\Kafka\Configuration;
 
 final class ReportConsumer extends AbstractConsumer
 {
-
     public function __construct(
         Configuration           $configuration,
         LoggerInterface         $logger,
         readonly ReportGenerateService $reportGenerateService,
-    )
-    {
+    ) {
         parent::__construct($configuration, $logger);
     }
 
@@ -29,7 +27,7 @@ final class ReportConsumer extends AbstractConsumer
         return 'report_generation';
     }
 
-    function processMessage(Message $message): void
+    protected function processMessage(Message $message): void
     {
         $reportId = json_decode($message->payload, true)['reportId'];
         $this->reportGenerateService->generateReport($reportId);

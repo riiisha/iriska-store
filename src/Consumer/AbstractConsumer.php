@@ -17,7 +17,7 @@ abstract class AbstractConsumer implements NamedConsumer
     public function __construct(
         readonly Configuration   $configuration,
         readonly LoggerInterface $logger,
-    ){
+    ) {
     }
 
     public function run(): void
@@ -45,7 +45,7 @@ abstract class AbstractConsumer implements NamedConsumer
 
     abstract protected function getTopicName(): string;
 
-    abstract function processMessage(Message $message): void;
+    abstract protected function processMessage(Message $message): void;
 
     private function getConfig(): ConsumerConfig
     {

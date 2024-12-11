@@ -27,8 +27,7 @@ abstract class AbstractKafkaService
         mixed $message,
         int $partition = RD_KAFKA_PARTITION_UA,
         int $timeout = self::DEFAULT_TIMEOUT
-    ): void
-    {
+    ): void {
         $payload = json_encode($message);
         $this->topic->produce($partition, 0, $payload);
 

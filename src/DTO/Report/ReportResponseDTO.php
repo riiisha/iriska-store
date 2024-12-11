@@ -17,6 +17,6 @@ final class ReportResponseDTO
         public string $result,
         #[Assert\Valid]
         public ?ReportDetailDTO $detail = null
-    ){
+    ) {
     }
 }

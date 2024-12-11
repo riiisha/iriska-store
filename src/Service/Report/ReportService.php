@@ -10,7 +10,7 @@ readonly class ReportService
     public function __construct(
         private UuidService $uuidService,
         private ReportGenerationKafkaService $kafkaService
-    ){
+    ) {
     }
 
     public function startReportGeneration(): string
