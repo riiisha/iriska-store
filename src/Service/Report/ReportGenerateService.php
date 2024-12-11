@@ -34,7 +34,7 @@ readonly class ReportGenerateService
                 $report .= json_encode($reportDTO) . PHP_EOL;
             }
             $dir = dirname(__DIR__, 3) . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'reports';
-            $filePath = $dir . DIRECTORY_SEPARATOR . $reportId . '.json';
+            $filePath = $dir . DIRECTORY_SEPARATOR . $reportId . '.jsonl';
             if (!is_dir($dir)) {
                 mkdir($dir);
             }
