@@ -127,16 +127,4 @@ class Order
 
         return $this;
     }
-
-    public function removeOrderItem(OrderItem $orderItem): static
-    {
-        if ($this->orderItems->removeElement($orderItem)) {
-            // set the owning side to null (unless already changed)
-            if ($orderItem->getOrder() === $this) {
-                $orderItem->setOrder(null);
-            }
-        }
-
-        return $this;
-    }
 }

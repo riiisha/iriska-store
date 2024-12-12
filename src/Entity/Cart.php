@@ -55,16 +55,6 @@ class Cart
         return $this->cartItems;
     }
 
-    public function addCartItem(CartItem $cartItem): static
-    {
-        if (!$this->cartItems->contains($cartItem)) {
-            $this->cartItems->add($cartItem);
-            $cartItem->setCart($this);
-        }
-
-        return $this;
-    }
-
     public function removeCartItems(CartItem $cartItem, $quantity = 1): static
     {
         if ($cartItem->getQuantity() <= $quantity) {

@@ -160,18 +160,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->cart;
     }
 
-    public function setCart(Cart $cart): static
-    {
-        // set the owning side of the relation if necessary
-        if ($cart->getOwner() !== $this) {
-            $cart->setOwner($this);
-        }
-
-        $this->cart = $cart;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Order>
      */
@@ -180,55 +168,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->orders;
     }
 
-    public function addOrder(Order $order): static
-    {
-        if (!$this->orders->contains($order)) {
-            $this->orders->add($order);
-            $order->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOrder(Order $order): static
-    {
-        if ($this->orders->removeElement($order)) {
-            // set the owning side to null (unless already changed)
-            if ($order->getOwner() === $this) {
-                $order->setOwner(null);
-            }
-        }
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Address>
      */
     public function getAddresses(): Collection
     {
         return $this->addresses;
-    }
-
-    public function addAddress(Address $address): static
-    {
-        if (!$this->addresses->contains($address)) {
-            $this->addresses->add($address);
-            $address->setOwner($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAddress(Address $address): static
-    {
-        if ($this->addresses->removeElement($address)) {
-            // set the owning side to null (unless already changed)
-            if ($address->getOwner() === $this) {
-                $address->setOwner(null);
-            }
-        }
-
-        return $this;
     }
 }
