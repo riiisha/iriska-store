@@ -2,6 +2,8 @@
 
 namespace App\DataFixtures;
 
+use App\DTO\Product\CreateProductDTO;
+use App\DTO\Product\MeasurementDTO;
 use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -15,21 +17,22 @@ class ProductFixture extends Fixture
 
         for ($id = 1; $id <= 10; $id++) {
             for ($version = 1; $version <= 3; $version++) {
-                $measurement = [
-                    'weight' => $faker->numberBetween(1, 50),
-                    'height' => $faker->numberBetween(1, 50),
-                    'length' => $faker->numberBetween(1, 50),
-                    'width' => $faker->numberBetween(1, 50)
-                ];
-                $product = (new Product())
-                    ->setId($id)
-                    ->setVersion($version)
-                    ->setName($faker->word())
-                    ->setDescription($faker->sentence())
-                    ->setCost($faker->numberBetween(1, 50))
-                    ->setTax($faker->numberBetween(1, 50))
-                    ->setMeasurements($measurement);
-
+                $measurement = new MeasurementDTO(
+                    $faker->numberBetween(1, 50),
+                    $faker->numberBetween(1, 50),
+                    $faker->numberBetween(1, 50),
+                    $faker->numberBetween(1, 50)
+                );
+                $dto = new CreateProductDTO(
+                    $id,
+                    $version,
+                    $faker->word(),
+                    $measurement,
+                    $faker->sentence(),
+                    $faker->numberBetween(1, 50),
+                    $faker->numberBetween(1, 50)
+                );
+                $product = new Product($dto);
                 $manager->persist($product);
             }
         }

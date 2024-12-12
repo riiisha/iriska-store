@@ -44,17 +44,10 @@ readonly class ProductService
     {
         $product = $this->productRepository->findByIdentifiers($createProductDTO->id, $createProductDTO->version);
         if (!$product) {
-            $product = new Product();
-            $product
-                ->setVersion($createProductDTO->version)
-                ->setId($createProductDTO->id);
+            $product = new Product($createProductDTO);
+        } else{
+            $product->update($createProductDTO);
         }
-        $product
-            ->setTax($createProductDTO->tax)
-            ->setCost($createProductDTO->cost)
-            ->setMeasurements((array)$createProductDTO->measurements)
-            ->setName($createProductDTO->name)
-            ->setDescription($createProductDTO->description);
 
         $this->entityManager->persist($product);
         $this->entityManager->flush();
