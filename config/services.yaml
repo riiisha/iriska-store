@@ -33,3 +33,7 @@ services:
     App\EventListener\User\UserRegisterEventListener:
         tags:
             - { name: 'kernel.event_listener', event: 'user_register', method: 'onUserRegister' }
+
+    App\EventListener\Order\OrderCreateEventListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'order_create', method: 'onOrderCreate' }

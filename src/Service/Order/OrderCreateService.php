@@ -2,33 +2,30 @@
 
 namespace App\Service\Order;
 
-use App\DTO\Address\DeliveryAddressDTO;
-use App\DTO\Notification\OrderItemDTO;
-use App\DTO\Notification\OrderNotificationEmailDTO;
 use App\DTO\Order\OrderDTO;
 use App\Entity\CartItem;
 use App\Entity\Order\Order;
 use App\Entity\Order\OrderItem;
 use App\Entity\User;
 use App\Enum\DeliveryMethod;
-use App\Enum\NotificationType;
+use App\Event\Order\OrderCreateEvent;
 use App\Repository\ProductRepository;
 use App\Service\Address\AddressService;
-use App\Service\NotificationService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
 readonly class OrderCreateService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
-        private ProductRepository      $productRepository,
-        private AddressService         $addressService,
-        private NotificationService    $notificationService,
-        private LoggerInterface        $logger
+        private EntityManagerInterface   $entityManager,
+        private ProductRepository        $productRepository,
+        private AddressService           $addressService,
+        private EventDispatcherInterface $eventDispatcher,
+        private LoggerInterface          $logger,
     ) {
     }
 
@@ -96,8 +93,8 @@ readonly class OrderCreateService
             $this->entityManager->flush();
             $this->entityManager->commit();
 
-            $notification = $this->createNotification($order, $user);
-            $this->notificationService->sendEmail($notification);
+            $event = new OrderCreateEvent($order, $user);
+            $this->eventDispatcher->dispatch($event, OrderCreateEvent::NAME);
 
             $this->logger->debug("Order created (ID: {$order->getId()})");
         } catch (Exception $e) {
@@ -127,31 +124,5 @@ readonly class OrderCreateService
             }
         }
         $this->entityManager->persist($cart);
-    }
-
-    private function createNotification(Order $order, User $user): OrderNotificationEmailDTO
-    {
-        foreach ($order->getOrderItems() as $orderItem) {
-            $product = $orderItem->getProduct();
-            $orderItems[] = new OrderItemDTO(
-                $product->getName(),
-                $product->getCost() * $orderItem->getQuantity(),
-                null
-            );
-        }
-        if ($order->getDeliveryMethod() == DeliveryMethod::COURIER) {
-            $deliveryAddress = new DeliveryAddressDTO(
-                $order->getAddress()->__toString(),
-                null
-            );
-        }
-        return new OrderNotificationEmailDTO(
-            $user->getEmail(),
-            NotificationType::SUCCESS_PAYMENT->value,
-            (string)$order->getId(),
-            $orderItems ?? [],
-            $order->getDeliveryMethod()->value,
-            $deliveryAddress ?? null
-        );
     }
 }
