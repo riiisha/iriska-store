@@ -23,7 +23,7 @@ class AdminUserEditControllerTest extends BaseWebTestCase
         ];
     }
 
-    public function testEditActionSuccess()
+    public function testEditActionSuccess(): void
     {
         $this->loginAdmin();
 
@@ -41,7 +41,7 @@ class AdminUserEditControllerTest extends BaseWebTestCase
         $this->assertEquals($user->getName(), $testName);
     }
 
-    public function testEditActionNotFound()
+    public function testEditActionNotFound(): void
     {
         $this->loginAdmin();
 
@@ -52,14 +52,14 @@ class AdminUserEditControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    public function testEditActionUnauthorized()
+    public function testEditActionUnauthorized(): void
     {
         $data = $this->getData();
         $this->putRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testEditActionForbidden()
+    public function testEditActionForbidden(): void
     {
         $this->loginUser();
         $data = $this->getData();

@@ -12,7 +12,7 @@ class CartAddItemControllerTest extends BaseWebTestCase
         return $this->generateUrl('api_cart_add_item');
     }
 
-    public function testAddItemActionSuccess()
+    public function testAddItemActionSuccess(): void
     {
         $this->loginUser();
 
@@ -21,7 +21,7 @@ class CartAddItemControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 
-    public function testAddItemActionFailure()
+    public function testAddItemActionFailure(): void
     {
         $this->loginUser();
 
@@ -30,7 +30,7 @@ class CartAddItemControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testAddItemActionFailureUnauthorized()
+    public function testAddItemActionFailureUnauthorized(): void
     {
         $this->postRequest($this->getUrl(), ['productId' => 1]);
 

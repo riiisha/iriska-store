@@ -22,14 +22,14 @@ class UserRegisterControllerTest extends BaseWebTestCase
         ];
     }
 
-    public function testUserRegisterSuccess()
+    public function testUserRegisterSuccess(): void
     {
         $this->postRequest($this->getUrl(), $this->getData());
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 
-    public function testUserRegisterNotValidEmail()
+    public function testUserRegisterNotValidEmail(): void
     {
         $data = $this->getData();
         $data['email'] = 'test@test';
@@ -39,7 +39,7 @@ class UserRegisterControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testUserRegisterNotValidPhone()
+    public function testUserRegisterNotValidPhone(): void
     {
         $data = $this->getData();
         $data['phone'] = '7111111111111111';

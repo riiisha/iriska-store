@@ -12,7 +12,7 @@ class ProductListControllerTest extends BaseWebTestCase
         return $this->generateUrl('api_product_list');
     }
 
-    public function testListSuccess()
+    public function testListSuccess(): void
     {
         $this->getRequest($this->getUrl());
 

@@ -93,7 +93,8 @@ abstract class BaseWebTestCase extends WebTestCase
 
     abstract protected function getUrl(): string;
 
-    protected function generateUrl(string $routeName){
+    protected function generateUrl(string $routeName): string
+    {
         return $this->getContainer()->get('router')->generate($routeName);
     }
 }

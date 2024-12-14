@@ -12,7 +12,7 @@ class CartShowControllerTest extends BaseWebTestCase
         return $this->generateUrl('api_cart_show');
     }
 
-    public function testShowActionSuccess()
+    public function testShowActionSuccess(): void
     {
         $this->loginUser();
 
@@ -22,7 +22,7 @@ class CartShowControllerTest extends BaseWebTestCase
         $this->assertJson($this->client->getResponse()->getContent());
     }
 
-    public function testShowActionFailureUnauthorized()
+    public function testShowActionFailureUnauthorized(): void
     {
         $this->getRequest($this->getUrl());
 

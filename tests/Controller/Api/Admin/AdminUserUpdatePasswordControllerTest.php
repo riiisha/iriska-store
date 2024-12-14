@@ -22,7 +22,7 @@ class AdminUserUpdatePasswordControllerTest extends BaseWebTestCase
         ];
     }
 
-    public function testUpdatePasswordActionSuccess()
+    public function testUpdatePasswordActionSuccess(): void
     {
         $this->loginAdmin();
 
@@ -38,7 +38,7 @@ class AdminUserUpdatePasswordControllerTest extends BaseWebTestCase
         $this->assertTrue($isPasswordValid);
     }
 
-    public function testEditActionNotFound()
+    public function testEditActionNotFound(): void
     {
         $this->loginAdmin();
 
@@ -49,14 +49,14 @@ class AdminUserUpdatePasswordControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    public function testEditActionUnauthorized()
+    public function testEditActionUnauthorized(): void
     {
         $data = $this->getData();
         $this->patchRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testEditActionForbidden()
+    public function testEditActionForbidden(): void
     {
         $this->loginUser();
         $data = $this->getData();

@@ -31,7 +31,7 @@ class OrderCreateControllerTest extends BaseWebTestCase
         ];
     }
 
-    public function testCreateActionSuccessCourier()
+    public function testCreateActionSuccessCourier(): void
     {
         $this->loginUser();
 
@@ -41,7 +41,7 @@ class OrderCreateControllerTest extends BaseWebTestCase
     }
 
 
-    public function testCreateActionSuccessPickup()
+    public function testCreateActionSuccessPickup(): void
     {
         $this->loginUser();
 
@@ -53,7 +53,7 @@ class OrderCreateControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 
-    public function testCreateActionFailure()
+    public function testCreateActionFailure(): void
     {
         $this->loginUser();
 
@@ -65,7 +65,7 @@ class OrderCreateControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testCreateActionFailureExceedsMaxQuantity()
+    public function testCreateActionFailureExceedsMaxQuantity(): void
     {
         $this->loginUser();
 
@@ -77,7 +77,7 @@ class OrderCreateControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testCreateActionFailureEmptyAddressForCourier()
+    public function testCreateActionFailureEmptyAddressForCourier(): void
     {
         $this->loginUser();
 
@@ -90,7 +90,7 @@ class OrderCreateControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testCreateActionFailureUnauthorized()
+    public function testCreateActionFailureUnauthorized(): void
     {
         $this->postRequest($this->getUrl(), $this->getData());
 

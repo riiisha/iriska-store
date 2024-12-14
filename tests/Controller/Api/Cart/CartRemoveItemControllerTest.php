@@ -12,7 +12,7 @@ class CartRemoveItemControllerTest extends BaseWebTestCase
         return $this->generateUrl('api_cart_remove_item');
     }
 
-    public function testRemoveItemActionSuccess()
+    public function testRemoveItemActionSuccess(): void
     {
         $this->loginUser();
         $this->deleteRequest($this->getUrl(), ['productId' => 1]);
@@ -20,7 +20,7 @@ class CartRemoveItemControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
-    public function testRemoveItemActionFailure()
+    public function testRemoveItemActionFailure(): void
     {
         $this->loginUser();
         $this->deleteRequest($this->getUrl(), ['productId' => '']);
@@ -28,7 +28,7 @@ class CartRemoveItemControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function testRemoveItemActionFailureUnauthorized()
+    public function testRemoveItemActionFailureUnauthorized(): void
     {
         $this->deleteRequest($this->getUrl(), ['productId' => '']);
 

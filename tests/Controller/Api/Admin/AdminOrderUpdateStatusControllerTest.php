@@ -23,7 +23,7 @@ class AdminOrderUpdateStatusControllerTest extends BaseWebTestCase
         ];
     }
 
-    public function testUpdateStatusActionSuccess()
+    public function testUpdateStatusActionSuccess(): void
     {
         $this->createOrder();
         $this->loginAdmin();
@@ -39,7 +39,7 @@ class AdminOrderUpdateStatusControllerTest extends BaseWebTestCase
         $this->assertEquals(OrderStatus::READY_TO_PICKUP, $order->getStatus());
     }
 
-    public function testUpdateStatusActionNotFound()
+    public function testUpdateStatusActionNotFound(): void
     {
         $this->loginAdmin();
 
@@ -50,14 +50,14 @@ class AdminOrderUpdateStatusControllerTest extends BaseWebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
     }
 
-    public function testEditActionUnauthorized()
+    public function testEditActionUnauthorized(): void
     {
         $data = $this->getData();
         $this->patchRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
 
-    public function testEditActionForbidden()
+    public function testEditActionForbidden(): void
     {
         $this->loginUser();
         $data = $this->getData();
