@@ -19,7 +19,7 @@ abstract class BaseWebTestCase extends WebTestCase
     {
         $client = static::createClient();
         $this->client = $client;
-        $this->em =$client->getContainer()->get('doctrine.orm.entity_manager');
+        $this->em = $client->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     protected function loginUser(): void
