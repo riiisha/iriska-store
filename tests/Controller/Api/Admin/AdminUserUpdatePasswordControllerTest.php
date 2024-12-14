@@ -5,6 +5,7 @@ namespace App\Tests\Controller\Api\Admin;
 use App\Entity\User;
 use App\Tests\Controller\Api\BaseWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AdminUserUpdatePasswordControllerTest extends BaseWebTestCase
 {
@@ -31,8 +32,8 @@ class AdminUserUpdatePasswordControllerTest extends BaseWebTestCase
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-        $userRepository = $this->em->getRepository(User::class);
-        $user = $userRepository->getById($data['userId']);
+        $user = $this->em->find(User::class, $data['userId']);
+        $this->passwordHasher = $this->client->getContainer()->get(UserPasswordHasherInterface::class);
         $isPasswordValid = $this->passwordHasher->isPasswordValid($user, $data['newPassword']);
         $this->assertTrue($isPasswordValid);
     }

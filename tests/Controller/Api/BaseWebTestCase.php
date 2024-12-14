@@ -25,21 +25,7 @@ class BaseWebTestCase extends WebTestCase
     {
         $client = static::createClient();
         $this->client = $client;
-        $this->em = $client->getContainer()->get('doctrine')->getManager();
-
-        $this->passwordHasher = $client->getContainer()->get(UserPasswordHasherInterface::class);
-
-        $schemaTool = new SchemaTool($this->em);
-        $metadata = $this->em->getMetadataFactory()->getAllMetadata();
-        $schemaTool->dropSchema($metadata);
-        $schemaTool->createSchema($metadata);
-
-        $loader = new Loader();
-        $loader->addFixture(new UserFixture($this->passwordHasher));
-        $loader->addFixture(new ProductFixture());
-        $purger = new ORMPurger();
-        $executor = new ORMExecutor($this->em, $purger);
-        $executor->execute($loader->getFixtures(), true);
+        $this->em =$client->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     protected function loginUser(): void

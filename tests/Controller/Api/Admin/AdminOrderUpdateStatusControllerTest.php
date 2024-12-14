@@ -44,6 +44,7 @@ class AdminOrderUpdateStatusControllerTest extends BaseWebTestCase
         $this->loginAdmin();
 
         $data = $this->getData();
+        $data['orderId'] = 9999;
 
         $this->patchRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
