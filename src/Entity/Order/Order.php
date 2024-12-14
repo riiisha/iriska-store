@@ -26,7 +26,7 @@ class Order
 
     #[ORM\ManyToOne(inversedBy: 'orders')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $owner;
+    private User $owner;
 
     #[ORM\Column(length: 15)]
     private string $phone;
@@ -71,29 +71,22 @@ class Order
         return $this->id;
     }
 
-    public function getOwner(): ?User
+    public function getOwner(): User
     {
         return $this->owner;
     }
 
-    public function setOwner(?User $owner): static
-    {
-        $this->owner = $owner;
-
-        return $this;
-    }
-
-    public function getPhone(): ?string
+    public function getPhone(): string
     {
         return $this->phone;
     }
 
-    public function getDeliveryMethod(): ?DeliveryMethod
+    public function getDeliveryMethod(): DeliveryMethod
     {
         return $this->deliveryMethod;
     }
 
-    public function getStatus(): ?OrderStatus
+    public function getStatus(): OrderStatus
     {
         return $this->status;
     }
