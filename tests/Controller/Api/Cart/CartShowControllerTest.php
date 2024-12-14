@@ -9,7 +9,7 @@ class CartShowControllerTest extends BaseWebTestCase
 {
     protected function getUrl(): string
     {
-        return '/api/cart';
+        return $this->generateUrl('api_cart_show');
     }
 
     public function testShowActionSuccess()

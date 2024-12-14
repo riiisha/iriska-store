@@ -11,7 +11,7 @@ class AdminUserUpdatePasswordControllerTest extends BaseWebTestCase
 {
     protected function getUrl(): string
     {
-        return '/api/admin/user/update-password';
+        return $this->generateUrl('api_admin_user_update_password');
     }
 
     protected function getData(): array

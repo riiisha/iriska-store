@@ -12,7 +12,7 @@ class AdminOrderUpdateStatusControllerTest extends BaseWebTestCase
 {
     protected function getUrl(): string
     {
-        return '/api/admin/order/update-status';
+        return $this->generateUrl('api_admin_order_update_status');
     }
 
     protected function getData(): array

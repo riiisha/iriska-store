@@ -9,7 +9,7 @@ class CartRemoveItemControllerTest extends BaseWebTestCase
 {
     protected function getUrl(): string
     {
-        return '/api/cart';
+        return $this->generateUrl('api_cart_remove_item');
     }
 
     public function testRemoveItemActionSuccess()

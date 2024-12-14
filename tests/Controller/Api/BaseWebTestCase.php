@@ -2,20 +2,14 @@
 
 namespace App\Tests\Controller\Api;
 
-use App\DataFixtures\ProductFixture;
-use App\DataFixtures\UserFixture;
 use App\Entity\User;
-use Doctrine\Common\DataFixtures\Executor\ORMExecutor;
-use Doctrine\Common\DataFixtures\Loader;
-use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
-class BaseWebTestCase extends WebTestCase
+abstract class BaseWebTestCase extends WebTestCase
 {
     protected KernelBrowser $client;
     protected UserPasswordHasherInterface $passwordHasher;
@@ -95,5 +89,11 @@ class BaseWebTestCase extends WebTestCase
             ['CONTENT_TYPE' => 'application/json'],
             json_encode($data)
         );
+    }
+
+    abstract protected function getUrl(): string;
+
+    protected function generateUrl(string $routeName){
+        return $this->getContainer()->get('router')->generate($routeName);
     }
 }

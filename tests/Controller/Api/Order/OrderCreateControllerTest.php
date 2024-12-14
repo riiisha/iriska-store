@@ -11,7 +11,7 @@ class OrderCreateControllerTest extends BaseWebTestCase
 {
     protected function getUrl(): string
     {
-        return '/api/order';
+        return $this->generateUrl('api_order_create');
     }
 
     protected function getData(): array

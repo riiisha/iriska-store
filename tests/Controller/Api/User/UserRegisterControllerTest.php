@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class UserRegisterControllerTest extends BaseWebTestCase
 {
-    private function getUrl(): string
+    protected function getUrl(): string
     {
-        return '/api/user/register';
+        return $this->generateUrl('api_user_register');
     }
 
     protected function getData(): array

@@ -10,7 +10,7 @@ class AdminUserEditControllerTest extends BaseWebTestCase
 {
     protected function getUrl(): string
     {
-        return '/api/admin/user/edit';
+        return $this->generateUrl('api_admin_user_edit');
     }
 
     protected function getData(): array
