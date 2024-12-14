@@ -77,6 +77,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->addresses = new ArrayCollection();
     }
 
+    /**
+     * @param string $name
+     * @param string $phone
+     * @param string[] $roles
+     * @return void
+     */
     public function update(
         string $name,
         string $phone,

@@ -55,7 +55,7 @@ class Cart
         return $this->cartItems;
     }
 
-    public function removeCartItems(CartItem $cartItem, $quantity = 1): static
+    public function removeCartItems(CartItem $cartItem, int $quantity = 1): static
     {
         if ($cartItem->getQuantity() <= $quantity) {
             $this->removeCartItem($cartItem);

@@ -17,12 +17,21 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    public function findByIdentifiers(int $id, int $version)
+    /**
+     * @param int $id
+     * @param int $version
+     * @return Product|null
+     */
+    public function findByIdentifiers(int $id, int $version): ?Product
     {
         return $this->findOneBy(['id' => $id, 'version' => $version]);
     }
 
-    public function findProductWithLatestVersion(int $id)
+    /**
+     * @param int $id
+     * @return Product|null
+     */
+    public function findProductWithLatestVersion(int $id): ?Product
     {
         return $this->createQueryBuilder('p')
             ->where('p.id = :id')
@@ -33,7 +42,11 @@ class ProductRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findProductsWithLatestVersion(ProductFilter $filter)
+    /**
+     * @param ProductFilter $filter
+     * @return Product[]
+     */
+    public function findProductsWithLatestVersion(ProductFilter $filter): array
     {
         $query = $this->createQueryBuilder('p')
             ->select('p')
@@ -61,7 +74,11 @@ class ProductRepository extends ServiceEntityRepository
         return $query->getQuery()->getResult();
     }
 
-    public function findLatestVersionsByIdentifiers(array $ids)
+    /**
+     * @param int[] $ids
+     * @return Product[]
+     */
+    public function findLatestVersionsByIdentifiers(array $ids): array
     {
         return $this->createQueryBuilder('p')
             ->where('p.id IN (:ids)')
@@ -76,6 +93,9 @@ class ProductRepository extends ServiceEntityRepository
     }
 
 
+    /**
+     * @return int
+     */
     public function countProductsWithMaxVersion(): int
     {
         $query = $this->createQueryBuilder('p')

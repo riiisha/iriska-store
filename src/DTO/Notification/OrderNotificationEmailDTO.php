@@ -27,7 +27,7 @@ final class OrderNotificationEmailDTO implements NotificationDTOInterface
      * @param string $userEmail
      * @param string $notificationType
      * @param string $orderNum
-     * @param array $orderItems
+     * @param OrderItemDTO[]  $orderItems
      * @param string $deliveryType
      * @param DeliveryAddressDTO|null $deliveryAddress
      */

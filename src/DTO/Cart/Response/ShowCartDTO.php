@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 final class ShowCartDTO
 {
     /**
-     * @param array $cartItems
+     * @param CartItemDTO[] $cartItems
      * @param int $totalCost
      */
     public function __construct(

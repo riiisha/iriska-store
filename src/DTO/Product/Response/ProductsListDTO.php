@@ -12,15 +12,15 @@ final class ProductsListDTO
      * @param int $total
      * @param int $page
      * @param int $limit
-     * @param array $products
+     * @param ProductItemDTO[] $products
      */
     public function __construct(
-        #[Assert\All([
-            new Assert\Type(ProductItemDTO::class),
-        ])]
         public int   $total,
         public int   $page,
         public int   $limit,
+        #[Assert\All([
+            new Assert\Type(ProductItemDTO::class),
+        ])]
         public array $products,
     ) {
     }

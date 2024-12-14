@@ -29,13 +29,13 @@ class Order
     private ?User $owner;
 
     #[ORM\Column(length: 15)]
-    private ?string $phone;
+    private string $phone;
 
     #[ORM\Column(enumType: DeliveryMethod::class)]
-    private ?DeliveryMethod $deliveryMethod;
+    private DeliveryMethod $deliveryMethod;
 
     #[ORM\Column(enumType: OrderStatus::class)]
-    private ?OrderStatus $status;
+    private OrderStatus $status;
 
     #[ORM\ManyToOne]
     private ?Address $address = null;
