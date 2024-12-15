@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Api\User;
 
+use App\DTO\User\UserRegisterDTO;
 use App\Tests\Controller\Api\BaseWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,27 +13,22 @@ class UserRegisterControllerTest extends BaseWebTestCase
         return $this->generateUrl('api_user_register');
     }
 
-    protected function getData(): array
+    protected function getUserRegisterDTO(): UserRegisterDTO
     {
-        return [
-            'email' => 'test@test.com',
-            'phone' => '+71111111111',
-            'password' => 'test_pass',
-            'name' => 'test',
-        ];
+        return new UserRegisterDTO('test', 'test@test.com', '+71111111111', 'test_pass');
     }
 
     public function testUserRegisterSuccess(): void
     {
-        $this->postRequest($this->getUrl(), $this->getData());
+        $this->postRequest($this->getUrl(), $this->getUserRegisterDTO());
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 
     public function testUserRegisterNotValidEmail(): void
     {
-        $data = $this->getData();
-        $data['email'] = 'test@test';
+        $data = $this->getUserRegisterDTO();
+        $data->email = 'test@test';
 
         $this->postRequest($this->getUrl(), $data);
 
@@ -41,8 +37,8 @@ class UserRegisterControllerTest extends BaseWebTestCase
 
     public function testUserRegisterNotValidPhone(): void
     {
-        $data = $this->getData();
-        $data['phone'] = '7111111111111111';
+        $data = $this->getUserRegisterDTO();
+        $data->phone = '7111111111111111';
 
         $this->postRequest($this->getUrl(), $data);
 

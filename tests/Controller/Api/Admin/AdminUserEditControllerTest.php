@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Api\Admin;
 
+use App\DTO\User\UserEditDTO;
 use App\Entity\User;
 use App\Tests\Controller\Api\BaseWebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -13,14 +14,9 @@ class AdminUserEditControllerTest extends BaseWebTestCase
         return $this->generateUrl('api_admin_user_edit');
     }
 
-    protected function getData(): array
+    protected function getUserEditDTO(): UserEditDTO
     {
-        return [
-            'email' => 'user@example.com',
-            'name' => 'test',
-            'phone' => '+79811111111',
-            'role' => 'ROLE_USER'
-        ];
+        return new UserEditDTO('user@example.com', 'test', '+79811111111', 'ROLE_USER');
     }
 
     public function testEditActionSuccess(): void
@@ -29,8 +25,8 @@ class AdminUserEditControllerTest extends BaseWebTestCase
 
         $testName = 'user_test';
 
-        $data = $this->getData();
-        $data['name'] = $testName;
+        $data = $this->getUserEditDTO();
+        $data->name = $testName;
 
         $this->putRequest($this->getUrl(), $data);
 
@@ -45,8 +41,8 @@ class AdminUserEditControllerTest extends BaseWebTestCase
     {
         $this->loginAdmin();
 
-        $data = $this->getData();
-        $data['email'] = 'test_test@example.com';
+        $data = $this->getUserEditDTO();
+        $data->email = 'test_test@example.com';
 
         $this->putRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -54,7 +50,7 @@ class AdminUserEditControllerTest extends BaseWebTestCase
 
     public function testEditActionUnauthorized(): void
     {
-        $data = $this->getData();
+        $data = $this->getUserEditDTO();
         $this->putRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
@@ -62,7 +58,7 @@ class AdminUserEditControllerTest extends BaseWebTestCase
     public function testEditActionForbidden(): void
     {
         $this->loginUser();
-        $data = $this->getData();
+        $data = $this->getUserEditDTO();
         $this->putRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }

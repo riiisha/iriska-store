@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Api\Admin;
 
+use App\DTO\Order\OrderUpdateStatusDTO;
 use App\Entity\User;
 use App\Enum\DeliveryMethod;
 use App\Enum\OrderStatus;
@@ -15,19 +16,16 @@ class AdminOrderUpdateStatusControllerTest extends BaseWebTestCase
         return $this->generateUrl('api_admin_order_update_status');
     }
 
-    protected function getData(): array
+    protected function getOrderUpdateStatusDTO(): OrderUpdateStatusDTO
     {
-        return [
-            'orderId' => 1,
-            'newStatus' => OrderStatus::READY_TO_PICKUP->value,
-        ];
+        return new OrderUpdateStatusDTO(1, OrderStatus::READY_TO_PICKUP->value);
     }
 
     public function testUpdateStatusActionSuccess(): void
     {
         $this->createOrder();
         $this->loginAdmin();
-        $data = $this->getData();
+        $data = $this->getOrderUpdateStatusDTO();
 
         $this->patchRequest($this->getUrl(), $data);
 
@@ -43,8 +41,8 @@ class AdminOrderUpdateStatusControllerTest extends BaseWebTestCase
     {
         $this->loginAdmin();
 
-        $data = $this->getData();
-        $data['orderId'] = 9999;
+        $data = $this->getOrderUpdateStatusDTO();
+        $data->orderId = 9999;
 
         $this->patchRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_NOT_FOUND);
@@ -52,7 +50,7 @@ class AdminOrderUpdateStatusControllerTest extends BaseWebTestCase
 
     public function testEditActionUnauthorized(): void
     {
-        $data = $this->getData();
+        $data = $this->getOrderUpdateStatusDTO();
         $this->patchRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
@@ -60,7 +58,7 @@ class AdminOrderUpdateStatusControllerTest extends BaseWebTestCase
     public function testEditActionForbidden(): void
     {
         $this->loginUser();
-        $data = $this->getData();
+        $data = $this->getOrderUpdateStatusDTO();
         $this->patchRequest($this->getUrl(), $data);
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }

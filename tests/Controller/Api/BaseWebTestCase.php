@@ -38,7 +38,7 @@ abstract class BaseWebTestCase extends WebTestCase
         $this->client->loginUser($user);
     }
 
-    protected function postRequest($url, $data): void
+    protected function postRequest(string $url, $data): void
     {
         $this->client->request(
             Request::METHOD_POST,
@@ -50,12 +50,12 @@ abstract class BaseWebTestCase extends WebTestCase
         );
     }
 
-    protected function getRequest($url, $params = []): void
+    protected function getRequest(string $url, $params = []): void
     {
         $this->client->request(Request::METHOD_GET, $url, $params);
     }
 
-    protected function putRequest($url, $data): void
+    protected function putRequest(string $url, $data): void
     {
         $this->client->request(
             Request::METHOD_PUT,
@@ -67,7 +67,7 @@ abstract class BaseWebTestCase extends WebTestCase
         );
     }
 
-    protected function patchRequest($url, $data): void
+    protected function patchRequest(string $url, $data): void
     {
         $this->client->request(
             Request::METHOD_PATCH,
@@ -79,7 +79,7 @@ abstract class BaseWebTestCase extends WebTestCase
         );
     }
 
-    protected function deleteRequest($url, $data): void
+    protected function deleteRequest(string $url, $data): void
     {
         $this->client->request(
             Request::METHOD_DELETE,

@@ -2,6 +2,9 @@
 
 namespace App\Tests\Controller\Api\Order;
 
+use App\DTO\Address\AddressDTO;
+use App\DTO\Order\OrderDTO;
+use App\DTO\Order\ProductDTO;
 use App\Entity\Order\Order;
 use App\Enum\DeliveryMethod;
 use App\Tests\Controller\Api\BaseWebTestCase;
@@ -14,28 +17,23 @@ class OrderCreateControllerTest extends BaseWebTestCase
         return $this->generateUrl('api_order_create');
     }
 
-    protected function getData(): array
+    protected function getOrderDTO(): OrderDTO
     {
-        return [
-            'phone' => 'phone',
-            'deliveryMethod' => DeliveryMethod::COURIER->value,
-            'products' => [[
-                'id' => 1,
-                'quantity' => 1
-            ]],
-            'address' => [
-                'city' => 'city',
-                'street' => 'street',
-                'house' => 'house',
-            ],
-        ];
+        $productDTO = new ProductDTO(1, 1);
+        $addressDTO = new AddressDTO('city', 'street', 'house');
+        return new OrderDTO(
+            'phone',
+            DeliveryMethod::COURIER->value,
+            [$productDTO],
+            $addressDTO
+        );
     }
 
     public function testCreateActionSuccessCourier(): void
     {
         $this->loginUser();
 
-        $this->postRequest($this->getUrl(), $this->getData());
+        $this->postRequest($this->getUrl(), $this->getOrderDTO());
 
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
@@ -45,8 +43,9 @@ class OrderCreateControllerTest extends BaseWebTestCase
     {
         $this->loginUser();
 
-        $data = $this->getData();
-        $data['deliveryMethod'] = DeliveryMethod::SELF_DELIVERY->value;
+        $data = $this->getOrderDTO();
+
+        $data->deliveryMethod = DeliveryMethod::SELF_DELIVERY->value;
 
         $this->postRequest($this->getUrl(), $data);
 
@@ -57,8 +56,8 @@ class OrderCreateControllerTest extends BaseWebTestCase
     {
         $this->loginUser();
 
-        $data = $this->getData();
-        $data['phone'] = '79111111111111111';
+        $data = $this->getOrderDTO();
+        $data->phone = '79111111111111111';
 
         $this->postRequest($this->getUrl(), $data);
 
@@ -69,8 +68,9 @@ class OrderCreateControllerTest extends BaseWebTestCase
     {
         $this->loginUser();
 
-        $data = $this->getData();
-        $data['products'] = [['id' => 1, 'quantity' => Order::MAX_QUANTITY_ORDER_ITEMS + 1]];
+        $data = $this->getOrderDTO();
+        $productDTO = new ProductDTO(1, Order::MAX_QUANTITY_ORDER_ITEMS + 1);
+        $data->products = [$productDTO];
 
         $this->postRequest($this->getUrl(), $data);
 
@@ -81,9 +81,10 @@ class OrderCreateControllerTest extends BaseWebTestCase
     {
         $this->loginUser();
 
-        $data = $this->getData();
-        $data['address'] = null; // Пустой адрес для курьерской доставки
-        $data['deliveryMethod'] = DeliveryMethod::COURIER->value;
+        $data = $this->getOrderDTO();
+
+        $data->address = null; // Пустой адрес для курьерской доставки
+        $data->deliveryMethod = DeliveryMethod::COURIER->value;
 
         $this->postRequest($this->getUrl(), $data);
 
@@ -92,7 +93,7 @@ class OrderCreateControllerTest extends BaseWebTestCase
 
     public function testCreateActionFailureUnauthorized(): void
     {
-        $this->postRequest($this->getUrl(), $this->getData());
+        $this->postRequest($this->getUrl(), $this->getOrderDTO());
 
         $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
     }
