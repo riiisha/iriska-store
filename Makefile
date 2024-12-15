@@ -14,6 +14,15 @@ init: ## Инициализация проекта
 cache-clear: ## Очистка кэша
 	$(SYMFONY_CONSOLE) cache:clear
 
+cs-fix-src: ## Исправление стиля кода в src
+	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix src
+
+cs-fix-tests: ## Исправление стиля кода в tests
+	tools/php-cs-fixer/vendor/bin/php-cs-fixer fix tests
+
+analyze: ## Статический анализ src + tests
+	vendor/bin/phpstan analyse src tests
+
 ## —— ✅ Test ——
 .PHONY: tests
 tests: ## Запуск тестов
