@@ -32,9 +32,11 @@ class OrderCreateControllerTest extends BaseWebTestCase
     public function testCreateActionSuccessCourier(): void
     {
         $this->loginUser();
-
+        $connection = $this->client->getContainer()->get('database_connection');
+        $countOrdersBefore = $connection->fetchOne('SELECT count(*) FROM "order"');
         $this->postRequest($this->getUrl(), $this->getOrderDTO());
-
+        $countOrdersAfter = $connection->fetchOne('SELECT count(*) FROM "order"');
+        $this->assertEquals($countOrdersBefore + 1, $countOrdersAfter);
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 

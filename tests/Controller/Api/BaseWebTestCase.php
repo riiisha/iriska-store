@@ -22,20 +22,24 @@ abstract class BaseWebTestCase extends WebTestCase
         $this->em = $client->getContainer()->get('doctrine.orm.entity_manager');
     }
 
-    protected function loginUser(): void
+    protected function loginUser(): User
     {
         $user = $this->em->getRepository(User::class)->findOneBy([
             'email' => 'user@example.com'
         ]);
         $this->client->loginUser($user);
+
+        return $user;
     }
 
-    protected function loginAdmin(): void
+    protected function loginAdmin(): User
     {
         $user = $this->em->getRepository(User::class)->findOneBy([
             'email' => 'admin@example.com'
         ]);
         $this->client->loginUser($user);
+
+        return $user;
     }
 
     protected function postRequest(string $url, $data): void

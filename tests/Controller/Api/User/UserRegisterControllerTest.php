@@ -21,7 +21,11 @@ class UserRegisterControllerTest extends BaseWebTestCase
     public function testUserRegisterSuccess(): void
     {
         $this->postRequest($this->getUrl(), $this->getUserRegisterDTO());
-
+        $connection = $this->client->getContainer()->get('database_connection');
+        $users = $connection->fetchAllAssociative(
+            'SELECT * FROM "user" WHERE email = \'' . $this->getUserRegisterDTO()->email . '\''
+        );
+        $this->assertCount(1, $users);
         $this->assertResponseStatusCodeSame(Response::HTTP_CREATED);
     }
 
