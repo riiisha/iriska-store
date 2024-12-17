@@ -3,12 +3,14 @@
 namespace App\Service\Order;
 
 use App\DTO\Order\OrderDTO;
+use App\Entity\Cart;
 use App\Entity\CartItem;
 use App\Entity\Order\Order;
 use App\Entity\Order\OrderItem;
 use App\Entity\User;
 use App\Enum\DeliveryMethod;
 use App\Event\Order\OrderCreateEvent;
+use App\Repository\OrderRepository;
 use App\Repository\ProductRepository;
 use App\Service\Address\AddressService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -23,6 +25,7 @@ readonly class OrderCreateService
     public function __construct(
         private EntityManagerInterface   $entityManager,
         private ProductRepository        $productRepository,
+        private OrderRepository          $orderRepository,
         private AddressService           $addressService,
         private EventDispatcherInterface $eventDispatcher,
         private LoggerInterface          $logger,
@@ -63,12 +66,9 @@ readonly class OrderCreateService
         }
 
         try {
-            $this->entityManager->beginTransaction();
-
             // Обработка адреса для курьерской доставки
             if ($deliveryMethod == DeliveryMethod::COURIER) {
                 $address = $this->addressService->getAddress($orderDTO->address, $user);
-                $this->entityManager->persist($address);
             }
 
             $order = new Order($orderDTO->phone, $user, $deliveryMethod, $address ?? null);
@@ -85,21 +85,19 @@ readonly class OrderCreateService
                 }
             }
 
-            $this->entityManager->persist($order);
+            $this->orderRepository->save($order);
 
             // Очистка корзины
-            $this->cleaningCart($orderDTO, $user);
+            $this->cleanCart($orderDTO, $user);
 
             $this->entityManager->flush();
-            $this->entityManager->commit();
 
             $event = new OrderCreateEvent($order, $user);
             $this->eventDispatcher->dispatch($event, OrderCreateEvent::NAME);
 
-            $this->logger->debug("Order created (ID: {$order->getId()})");
+            $this->logger->debug('[OrderCreateService] Order created', ['orderId' => $order->getId()]);
         } catch (Exception $e) {
-            $this->entityManager->rollback();
-            $this->logger->error('Order was not created due to an error:' . $e->getMessage());
+            $this->logger->error('[OrderCreateService] Order was not created', ['message' => $e->getMessage()]);
             throw $e;
         }
     }
@@ -107,7 +105,7 @@ readonly class OrderCreateService
     /**
      * Очистка корзины
      */
-    private function cleaningCart(OrderDTO $orderDTO, User $user): void
+    private function cleanCart(OrderDTO $orderDTO, User $user): void
     {
         $cart = $user->getCart();
 
@@ -123,6 +121,5 @@ readonly class OrderCreateService
                 $cart->removeCartItems($cartItem, $product['quantity']);
             }
         }
-        $this->entityManager->persist($cart);
     }
 }

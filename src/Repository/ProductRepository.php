@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\DTO\Product\ProductFilter;
 use App\Entity\Product;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -12,9 +13,25 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ProductRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private EntityManagerInterface $em;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $em)
     {
+        $this->em = $em;
         parent::__construct($registry, Product::class);
+    }
+
+    /**
+     * @param Product $product
+     * @param bool $flash
+     * @return void
+     */
+    public function save(Product $product, bool $flash = false): void
+    {
+        $this->em->persist($product);
+        if ($flash) {
+            $this->em->flush();
+        }
     }
 
     /**

@@ -37,7 +37,8 @@ class Product
     /**
      * @param CreateProductDTO $createProductDTO
      */
-    public function __construct(CreateProductDTO $createProductDTO) {
+    public function __construct(CreateProductDTO $createProductDTO)
+    {
         $this->id = $createProductDTO->id;
         $this->version = $createProductDTO->version;
         $this->name = $createProductDTO->name;

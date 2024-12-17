@@ -45,7 +45,7 @@ readonly class ProductService
         $product = $this->productRepository->findByIdentifiers($createProductDTO->id, $createProductDTO->version);
         if (!$product) {
             $product = new Product($createProductDTO);
-        } else{
+        } else {
             $product->update($createProductDTO);
         }
 

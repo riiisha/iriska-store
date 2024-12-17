@@ -17,7 +17,7 @@ class OrderCreateEventListener extends Event
 {
     public function __construct(
         private readonly NotificationService $notificationService
-    ){
+    ) {
     }
 
     public function onOrderCreate(OrderCreateEvent $event): void

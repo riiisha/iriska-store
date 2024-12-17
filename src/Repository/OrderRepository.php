@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Order\Order;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -12,8 +13,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class OrderRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private EntityManagerInterface $em;
+
+    public function __construct(ManagerRegistry $registry, EntityManagerInterface $em)
     {
+        $this->em = $em;
         parent::__construct($registry, Order::class);
     }
 
@@ -26,5 +30,13 @@ class OrderRepository extends ServiceEntityRepository
         }
 
         return $order;
+    }
+
+    public function save(Order $order, bool $flash = false): void
+    {
+        $this->em->persist($order);
+        if ($flash) {
+            $this->em->flush();
+        }
     }
 }
