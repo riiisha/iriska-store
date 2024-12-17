@@ -2,21 +2,22 @@
 
 namespace App\Service\Report;
 
-use App\Service\Kafka\ReportGenerationKafkaService;
+use App\Message\GenerateReportMessage;
 use App\Service\UuidService;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 readonly class ReportService
 {
     public function __construct(
         private UuidService $uuidService,
-        private ReportGenerationKafkaService $kafkaService
+        private MessageBusInterface $messageBus
     ) {
     }
 
     public function startReportGeneration(): string
     {
         $reportId = $this->uuidService->getUUID4();
-        $this->kafkaService->send($reportId);
+        $this->messageBus->dispatch(new GenerateReportMessage($reportId));
 
         return $reportId;
     }
