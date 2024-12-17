@@ -8,12 +8,10 @@ use App\DTO\Product\Response\ProductItemDTO;
 use App\DTO\Product\Response\ProductsListDTO;
 use App\Entity\Product;
 use App\Repository\ProductRepository;
-use Doctrine\ORM\EntityManagerInterface;
 
 readonly class ProductService
 {
     public function __construct(
-        private EntityManagerInterface $entityManager,
         private ProductRepository      $productRepository
     ) {
     }
@@ -48,9 +46,7 @@ readonly class ProductService
         } else {
             $product->update($createProductDTO);
         }
-
-        $this->entityManager->persist($product);
-        $this->entityManager->flush();
+        $this->productRepository->save($product, true);
 
         return $product;
     }
